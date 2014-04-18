@@ -1,0 +1,11 @@
+- conversion unités
+	- réduction taille colonne size)
+- indentation colonne file d'après depth
+	- tronquer les file indentés en enlevant le préfixe du père
+- ignorer les points de montages
+- paramètres ligne de commande (config)
+- verwion web
+	- détection CLI / web
+	- paramètre d'URL
+	- formatage tableau web
+
