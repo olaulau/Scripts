@@ -16,9 +16,9 @@ POST_DATA="username=$PIWIGO_LOGIN&password=$PIWIGO_PASSWORD&redirect=&login=Vali
 wget --server-response --output-file=$OUTPUT_FILE --output-document=$OUTPUT_DOCUMENT --load-cookies $COOKIE_FILE --save-cookies $COOKIE_FILE --keep-session-cookies --max-redirect=0 --post-data "$POST_DATA" $PIWIGO_BASE_URL/$ACTION
 
 #cat $OUTPUT_FILE
-rm -r $OUTPUT_FILE
+rm -f $OUTPUT_FILE
 #cat $OUTPUT_DOCUMENT
-rm -r $OUTPUT_DOCUMENT
+rm -f $OUTPUT_DOCUMENT
 #cat $COOKIE_FILE
 
 
@@ -29,11 +29,12 @@ POST_DATA="sync=files&display_info=1&add_to_caddie=1&privacy_levell=0&sync_meta=
 wget --server-response --output-file=$OUTPUT_FILE --output-document=$OUTPUT_DOCUMENT --load-cookies $COOKIE_FILE --save-cookies $COOKIE_FILE --keep-session-cookies --max-redirect=0 --post-data "$POST_DATA" $PIWIGO_BASE_URL/$ACTION
 
 #cat $OUTPUT_FILE
-rm -r $OUTPUT_FILE
+rm -f $OUTPUT_FILE
 #cat $OUTPUT_DOCUMENT
-rm -r $OUTPUT_DOCUMENT
+rm -f $OUTPUT_DOCUMENT
 #cat $COOKIE_FILE
 
 
+rm -f $COOKIE_FILE
 exit
 
