@@ -1,0 +1,3 @@
+TODO :
+- packaging en .deb
+- applet
