@@ -12,10 +12,17 @@ exit
 
 
 ## créer un template s'il n'existe pas
+if [ -f sources.list.template ]
+then
+	cp /etc/apt/sources.list sources.list.template
+fi
+
 
 ## vérif présence fichier de config
 
+
 ## premier menu choix action (auto oupas)
+
 
 ## 2nd menu (si choix manuel)
 PS3="Dépôt ? "
