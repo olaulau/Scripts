@@ -31,17 +31,18 @@ then
 fi
 
 let NB=${#TITLES[*]}
-echo "$NB éléments"
-for i in ${!TITLES[*]}
-do
-	echo "${TITLES[i]} => ${PREFIXES[i]}"
-done
+#echo "$NB éléments"
+#for i in ${!TITLES[*]}
+#do
+#	echo "${TITLES[i]} => ${PREFIXES[i]}"
+#done
 
 
 
 ## créer un template s'il n'existe pas
-if [ -f sources.list.template ]
+if [ ! -f sources.list.template ]
 then
+	#TODO création seulemnt si mode auto ou siaccepté via menu
 	echo "création du template d'après le fichier sources.list actuel"
 	cp /etc/apt/sources.list sources.list.template
 fi
@@ -54,6 +55,7 @@ fi
 
 ## 2nd menu (si choix manuel)
 
+#TODO refaire le menu avec do-while, for, read (permettra d'éviter de construire le tableau CHOIX en récupérant directement l'indice saisi)
 CHOIX=""
 for ((i=1; i<=NB; i++))
 do
@@ -76,19 +78,22 @@ do
 done
 
 opt=`echo "$opt" | cut -d' ' -f1`
-echo $opt
-exit
-echo "${TITLES[opt]} => ${PREFIXES[opt]}"
+#echo $opt
+#echo "${TITLES[opt]} => ${PREFIXES[opt]}"
+#exit
 
 
-
-## passer plutot par un fichier temporaire
+#TODO utiliser un système de variables à remplacer dans le template
+#TODO passer plutot par un fichier temporaire
 rm -f sources.list
 cp sources.list.template sources.list
 
-sed --in-place "s|fr.archive.ubuntu.com|mirrors.d-l.fr/archive.ubuntu.com|g" sources.list
-sed --in-place "s|archive.canonical.com|mirrors.d-l.fr/archive.canonical.com|g" sources.list
-sed --in-place "s|extras.ubuntu.com|mirrors.d-l.fr/extras.ubuntu.com|g" sources.list
+sed --in-place "s|fr.archive.ubuntu.com|${PREFIXES[opt]}archive.ubuntu.com|g" sources.list
+sed --in-place "s|archive.canonical.com|${PREFIXES[opt]}archive.canonical.com|g" sources.list
+sed --in-place "s|extras.ubuntu.com|${PREFIXES[opt]}extras.ubuntu.com|g" sources.list
+
+#echo "done !"
+#exit
 
 #cat sources.list
 
@@ -99,10 +104,18 @@ sed --in-place "s|extras.ubuntu.com|mirrors.d-l.fr/extras.ubuntu.com|g" sources.
 
 
 ## vérifier qu'un miroir est up -> choix automatique au démarrage de la machine
-wget http://mirrors.d-l.fr/archive.ubuntu.com/ubuntu/dists/raring/Release
-let dl-state = $?
+wget --quiet --output-document Release http://${PREFIXES[opt]}archive.ubuntu.com/ubuntu/dists/$DISTRIB_CODENAME/Release
+let status=$?
 rm -f Release
-si dl-state == 0 dans ce cas le dépot a l'air OK
+if [ $status -ne 0 ]
+then
+	echo "le dépot ne semble pas fonctionner, abandon."
+	rm -f sources.list
+	exit
+fi
+
+echo "done !"
+exit
 
 
 ## possibilité de chronométrer la récupération d'un fichier (packages par exemple ?)
