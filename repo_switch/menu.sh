@@ -3,50 +3,86 @@
 
 
 . /etc/lsb-release
-echo $DISTRIB_CODENAME
+#echo $DISTRIB_CODENAME
 
 LANG_PREFIX=${LANG:0:2}  
-echo $LANG_PREFIX
+#echo $LANG_PREFIX
 
-exit
+
+
+
+
+
+
+## vérif présence fichier de config
+if [ ! -f config.sh ]
+then
+	echo "config.sh pas trouvé."
+	echo "vous pouvez prendre exemple sur le config.sh.EXAMPLE fourni."
+	exit
+fi
+
+## chargement config et vérif
+. ./config.sh
+if ! [[ ${#TITLES[*]} -gt 0  &&  ${#TITLES[*]} -eq ${#PREFIXES[*]} ]]
+then
+	echo "fichier de config incorrect."
+	exit
+fi
+
+let NB=${#TITLES[*]}
+echo "$NB éléments"
+for i in ${!TITLES[*]}
+do
+	echo "${TITLES[i]} => ${PREFIXES[i]}"
+done
+
 
 
 ## créer un template s'il n'existe pas
 if [ -f sources.list.template ]
 then
+	echo "création du template d'après le fichier sources.list actuel"
 	cp /etc/apt/sources.list sources.list.template
 fi
-
-
-## vérif présence fichier de config
 
 
 ## premier menu choix action (auto oupas)
 
 
+
+
 ## 2nd menu (si choix manuel)
-PS3="Dépôt ? "
-select choix in \
-   "ubuntu fr" \
-   "d-l.fr"  \
-   "local"	\
-   "quitter"
+
+CHOIX=""
+for ((i=1; i<=NB; i++))
 do
-   case $REPLY in
-      1) echo "Ubuntu FR"
-      	break ;;
-      2) echo "mirrors.d-l.fr !"
-      	break ;;
-      3) echo "Local !!!"
-         break ;;
-      q) echo "bye ..."
-      	exit ;;
-      *) echo "Choix invalide"
-   esac
+   	CHOIX[$i-1]="$i ${TITLES[$i]}"
 done
 
+PS3="Dépôt ? "
+select opt in "${CHOIX[@]}" "Quit"
+do
+	if [ "$opt" = "Quit" ]
+	then
+		echo "Goodbye!"
+		exit
+	elif [ "$opt" = "" ]
+	then
+		echo "Invalid option, try another one continue"
+	else
+		break
+	fi
+done
 
-##passer plutot par un fichier temporaire
+opt=`echo "$opt" | cut -d' ' -f1`
+echo $opt
+exit
+echo "${TITLES[opt]} => ${PREFIXES[opt]}"
+
+
+
+## passer plutot par un fichier temporaire
 rm -f sources.list
 cp sources.list.template sources.list
 
