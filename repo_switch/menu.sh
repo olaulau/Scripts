@@ -42,9 +42,10 @@ let NB=${#TITLES[*]}
 ## créer un template s'il n'existe pas
 if [ ! -f sources.list.template ]
 then
-	#TODO création seulemnt si mode auto ou siaccepté via menu
+	#TODO création seulement si mode auto ou si accepté via menu
 	echo "création du template d'après le fichier sources.list actuel"
 	cp /etc/apt/sources.list sources.list.template
+	sed --in-place "s|http://fr.archive.ubuntu.com|http://archive.ubuntu.com|g" sources.list.template
 fi
 
 
@@ -88,7 +89,7 @@ opt=`echo "$opt" | cut -d' ' -f1`
 rm -f sources.list
 cp sources.list.template sources.list
 
-sed --in-place "s|fr.archive.ubuntu.com|${PREFIXES[opt]}archive.ubuntu.com|g" sources.list
+sed --in-place "s|archive.ubuntu.com|${PREFIXES[opt]}archive.ubuntu.com|g" sources.list
 sed --in-place "s|archive.canonical.com|${PREFIXES[opt]}archive.canonical.com|g" sources.list
 sed --in-place "s|extras.ubuntu.com|${PREFIXES[opt]}extras.ubuntu.com|g" sources.list
 
