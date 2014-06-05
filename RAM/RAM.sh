@@ -18,7 +18,7 @@ let THRESHOLD=500
 if [ "$DELTA" -lt "$THRESHOLD" ]
 then
 	/usr/bin/notify-send "RAM" "ATTENTION : il reste moins de $THRESHOLD Mo de libre"
-else
-	/usr/bin/notify-send "RAM" "ca va : il reste $DELTA Mo de libre"
+#else
+	#/usr/bin/notify-send "RAM" "ca va : il reste $DELTA Mo de libre"
 fi
 
