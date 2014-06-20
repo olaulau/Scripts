@@ -2,7 +2,7 @@
 
 # you can put this script in a crontab like that : 
 # */5     *       *       *       *       ~/BIN/RAM.sh
-# only if you call notify_prepare.sh in your session
+# only if you called notify_prepare.sh in your session
 
 if [ -r "$HOME/.dbus/Xdbus" ]; then
   . "$HOME/.dbus/Xdbus"
@@ -14,11 +14,11 @@ let DELTA=$FREE_RAM
 ###-$USED_SWAP
 #echo $DELTA
 
-let THRESHOLD=500
+let THRESHOLD=800
 if [ "$DELTA" -lt "$THRESHOLD" ]
 then
-	/usr/bin/notify-send "RAM" "ATTENTION : il reste moins de $THRESHOLD Mo de libre"
+	/usr/bin/notify-send "RAM" "ATTENTION : il ne reste que $DELTA Mo de libre"
 #else
-	#/usr/bin/notify-send "RAM" "ca va : il reste $DELTA Mo de libre"
+#	/usr/bin/notify-send "RAM" "ca va : il reste $DELTA Mo de libre"
 fi
 
