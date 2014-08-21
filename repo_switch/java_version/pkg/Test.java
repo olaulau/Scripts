@@ -3,21 +3,27 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 
 public class Test {
-	
-	final static String etc_release = "/etc/lsb-release";
+		
 	final static String config_file = "config.properties";
 
 	public static void main(String[] args) {
-//		Test.loadAndWriteProperties(etc_release);
-//		Test.loadAndWriteProperties(config_file);
+//		MyProperties prop = MyProperties.load(config_file);
+//		System.out.println(prop.toString());
 		
-		List<Mirror> list = Test.loadMirrors();
-		System.out.println(list);
+//		List<Mirror> list = Test.loadMirrors();
+//		System.out.println(list);
+		
+//		Runtime run = Runtime.getRuntime();
+//		try {
+//			String cmd = "sleep 2";
+//			Process proc = run.exec(cmd);
+//			proc.waitFor();
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
 	}
 
 	public static List<Mirror> loadMirrors() {
@@ -49,18 +55,7 @@ public class Test {
 	}
 
 	public static void loadAndWriteProperties(String fileName) {
-		try {
-			Properties prop = new Properties();
-			FileInputStream fis = new FileInputStream(fileName);
-			prop.load(fis);
-
-			Set<Entry<Object, Object>> set = prop.entrySet();
-			for (Entry<Object, Object> entry : set) {
-				System.out.println("'" + entry.getKey() + "'" + " => " + "'"
-						+ entry.getValue() + "'");
-			}
-		} catch (IOException ex) {
-			System.err.println(ex);
-		}
+		MyProperties prop = MyProperties.load(fileName);
+		System.out.println(prop.toString());
 	}
 }

@@ -10,6 +10,10 @@ public class Mirror {
 		this.prefix = prefix;
 	}
 	
+	public String toString() {
+		return title + "->" + prefix;
+	}
+	
 	
 	public String getTitle() {
 		return title;
