@@ -1,61 +1,55 @@
 package pkg;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class Test {
-		
+
 	final static String config_file = "config.properties";
+	final static String template = "../sources.list.template";
+	final static String sources_list = "../sources.list";
 
 	public static void main(String[] args) {
-//		MyProperties prop = MyProperties.load(config_file);
-//		System.out.println(prop.toString());
-		
-//		List<Mirror> list = Test.loadMirrors();
-//		System.out.println(list);
-		
-//		Runtime run = Runtime.getRuntime();
-//		try {
-//			String cmd = "sleep 2";
-//			Process proc = run.exec(cmd);
-//			proc.waitFor();
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
+		// MyProperties prop = MyProperties.load(config_file);
+		// System.out.println(prop.toString());
+
+		List<Mirror> list = Test.loadMirrors();
+		System.out.println(list);
+
+//		Test.runSubProcess("sleep 2");
+
+		System.exit(1);
 	}
 
 	public static List<Mirror> loadMirrors() {
 		ArrayList<Mirror> res = new ArrayList<Mirror>();
-		try {
-			Properties prop = new Properties();
-			FileInputStream fis = new FileInputStream(config_file);
-			prop.load(fis);
-			
-			int cpt = 1;
-			boolean loop;
-			do {
-				loop = false;
-				String titleKey = "mirrors." + cpt + ".title";
-				String prefixKey = "mirrors." + cpt + ".prefix";
-				String titleValue = prop.getProperty(titleKey);
-				String prefixValue = prop.getProperty(prefixKey);
-				if(titleValue != null && prefixValue != null) {
-					res.add(new Mirror(titleValue, prefixValue));
-					loop = true;
-				}
-				cpt ++;
+		MyProperties prop = MyProperties.load(config_file);
+		int cpt = 1;
+		boolean loop;
+		do {
+			loop = false;
+			String titleKey = "mirrors." + cpt + ".title";
+			String prefixKey = "mirrors." + cpt + ".prefix";
+			String titleValue = prop.get(titleKey);
+			String prefixValue = prop.get(prefixKey);
+			if (titleValue != null && prefixValue != null) {
+				res.add(new Mirror(titleValue, prefixValue));
+				loop = true;
 			}
-			while(loop);
-		} catch (IOException ex) {
-			System.err.println(ex);
-		}
+			cpt++;
+		} while (loop);
 		return res;
 	}
 
-	public static void loadAndWriteProperties(String fileName) {
-		MyProperties prop = MyProperties.load(fileName);
-		System.out.println(prop.toString());
+	public static int runSubProcess(String command) {
+		int res = -1;
+		Runtime run = Runtime.getRuntime();
+		try {
+			Process proc = run.exec(command);
+			res = proc.waitFor();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return res;
 	}
 }

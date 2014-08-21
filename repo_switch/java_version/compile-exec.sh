@@ -48,6 +48,8 @@ else
 	let exec_end_date=`$MICRO_DATE_CMD`
 fi
 
+less ../sources.list
+
 let compile_time=($compil_end_date-$compil_begin_date)/1000
 let exec_time=($exec_end_date-$exec_begin_date)/1000
 
@@ -55,5 +57,4 @@ echo " ----- "
 echo "compil time = $compile_time ms"
 echo "exec time = $exec_time ms"
 echo " => $exec_exit_status"
-
 
