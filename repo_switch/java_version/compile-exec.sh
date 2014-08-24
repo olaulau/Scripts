@@ -5,6 +5,8 @@ MICRO_DATE_CMD="date +%s%6N"
 SUB_DIR="pkg"
 BASE_PACKAGE="pkg."
 
+rm -f ../sources.list
+
 
 ## decide GCJ or JAVA
 if [ "$1" = "--java" ]
@@ -29,9 +31,11 @@ then
 	echo " [ using openJDK ] "
 	rm -f $SUB_DIR/*.class
 	let compil_begin_date=`$MICRO_DATE_CMD`
+	echo " [ compiling ... ] "
 	javac $SUB_DIR/Test.java
 	let compil_end_date=`$MICRO_DATE_CMD`
 	let exec_begin_date=`$MICRO_DATE_CMD`
+	echo " [ running ... ] "
 	java ${BASE_PACKAGE}Test
 	exec_exit_status=$?
 	let exec_end_date=`$MICRO_DATE_CMD`
@@ -39,10 +43,12 @@ else
 	echo " [ using GCJ ] "
 	rm -f $SUB_DIR/*.class Test.bin
 	let compil_begin_date=`$MICRO_DATE_CMD`
-	gcj -C $SUB_DIR/Test.java
+	echo " [ compiling ... ] "
+	gcj -C -Wno-all $SUB_DIR/Test.java
  	gcj --main=${BASE_PACKAGE}Test $SUB_DIR/*.class -o Test.bin
 	let compil_end_date=`$MICRO_DATE_CMD`
 	let exec_begin_date=`$MICRO_DATE_CMD`
+	echo " [ running ... ] "
 	./Test.bin
 	exec_exit_status=$?
 	let exec_end_date=`$MICRO_DATE_CMD`
