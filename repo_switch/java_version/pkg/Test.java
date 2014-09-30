@@ -15,8 +15,8 @@ public class Test {
 
 	public static void main(String[] args) {
 		List<Mirror> list = Test.loadMirrors();
-		
-		int mirrorId = 3;
+		Test.printMirrorChoice(list);
+		int mirrorId = Test.readMirrorChoice();
 		
 		Mirror choosenMirror = list.get(mirrorId);
 		
@@ -30,6 +30,26 @@ public class Test {
 
 
 		System.exit(0);
+	}
+	
+	public static void printMirrorChoice(List<Mirror> list) {
+		Mirror mirror;
+		for (int i = 0; i < list.size(); i++) {
+			mirror = list.get(i);
+			System.out.println((i+1) + " : " + mirror.getTitle());
+		}
+	}
+	
+	public static int readMirrorChoice() {
+		String line = "";
+		InputStreamReader isr = new InputStreamReader(System.in);
+		BufferedReader br = new BufferedReader(isr);
+		try {
+			line = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return (Integer.parseInt(line)-1);
 	}
 
 	public static List<Mirror> loadMirrors() {
