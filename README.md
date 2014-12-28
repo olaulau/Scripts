@@ -7,7 +7,9 @@ my unix usefull scripts
 	- available RAM  warning through ubuntu notification system
 	- a script to empty swap if possible
 - [mp3_folder](https://github.com/olaulau/Scripts/tree/master/mp3_folders)
-	- create a folder tree  based on directories name
+	- create a folder tree, based on directories name
+- [photo_folder](https://github.com/olaulau/Scripts/tree/master/photo_folders)
+	- sort pictures into directories, by date
 - [piwigo_sync](https://github.com/olaulau/Scripts/tree/master/piwigo_sync)
 	- launch a piwigo sync
 - [repo_switch](https://github.com/olaulau/Scripts/tree/master/repo_switch)
