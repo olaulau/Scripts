@@ -22,7 +22,8 @@ class PackagesFiles
 				$cpt ++;
 			}
 			else {
-				$big_array[$cpt][] = $line;
+				list($attribute, $value) = explode(': ', $line, 2);
+				$big_array[$cpt][$attribute] = $value;
 			}
 		}
 		unset($file);
@@ -30,35 +31,7 @@ class PackagesFiles
 		if(empty($big_array[$cpt][0]))
 			unset($big_array[$cpt]);
 // 		print_r($big_array); die;
-
-		$big_array2 = array();
-		foreach ($big_array as $big_cpt => &$small_array) {
-// 			echo "NEW PACKAGE" . PHP_EOL;
-			$big_array2[] = array();
-			foreach ($small_array as $small_cpt => &$line) {
-// 				echo "NUM $big_cpt : "; print_r($big_array2[$big_cpt]);
-				if($line !== '') {
-// 					echo 'LINE : "' . $line . '"' . PHP_EOL;
-					try {
-						list($attribute, $value) = explode(': ', $line, 2);
-					}
-					catch (Exception $ex) {
-						echo "Exception thrown : " . $ex . PHP_EOL;
-						echo "line : $line" . PHP_EOL;
-						die;
-					}
-						
-					if(!isset($big_array2[$big_cpt][$attribute]))
-						$big_array2[$big_cpt][$attribute] = $value;
-					else
-						echo "BUG : attribut dupliqué : $attribute = " . $big_array2[$big_cpt][$attribute] . ' <= ' . $value . PHP_EOL;
-					unset($small_array[$small_cpt]);
-				}
-			}
-		}
-		unset($big_array);
-// 		print_r($big_array2); die;
-		return $big_array2;
+		return $big_array;
 	}
 	
 	
