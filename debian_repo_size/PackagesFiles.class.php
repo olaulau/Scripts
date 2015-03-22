@@ -76,52 +76,31 @@ class PackagesFiles
 		$db = new PDO('sqlite::memory:');
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		
-		$db->exec("
-			CREATE TABLE IF NOT EXISTS packages (
-			id INTEGER PRIMARY KEY,
-			Architecture TEXT,
-			Bugs TEXT,
-			Description TEXT,
-			Description_md5 TEXT,
-			Filename TEXT,
-			MD5sum TEXT,
-			Maintainer TEXT,
-			Origin TEXT,
-			Package TEXT,
-			Priority TEXT,
-			SHA1 TEXT,
-			SHA256 TEXT,
-			Section TEXT,
-			Size TEXT,
-			Supported TEXT,
-			Version TEXT,
-			Installed_Size TEXT
-		)");
-	
-		$insert = "
-			INSERT INTO packages (Architecture, Bugs, Description, Description_md5, Filename, MD5sum, Maintainer, Origin, Package, Priority, SHA1, SHA256, Section, Size, Supported, Version, Installed_Size)
-			VALUES (:Architecture, :Bugs, :Description, :Description_md5, :Filename, :MD5sum, :Maintainer, :Origin, :Package, :Priority, :SHA1, :SHA256, :Section, :Size, :Supported, :Version, :Installed_Size)
-		";
-		$stmt = $db->prepare($insert);
+		$create_sql = "	CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, ";
+		$sql_attributes = array();
+		foreach (Package::$attribute_list as $attribute) {
+			$sql_attributes[] = $attribute . " TEXT";
+		}
+		$create_sql .= implode(", ", $sql_attributes);
+		$create_sql .= ")";
+// 		echo $create_sql; die;
+		$db->exec($create_sql);
+		
+		$insert_sql = "INSERT INTO packages ( " . implode(", ", Package::$attribute_list) . " ) ";
+		$insert_sql .= " VALUES ( ";
+		$sql_attributes = array();
+		foreach (Package::$attribute_list as $attribute) {
+			$sql_attributes[] = ":" . $attribute;
+		}
+		$insert_sql .= implode(", ", $sql_attributes);
+		$insert_sql .= ")";
+// 		echo $insert_sql; die;
+		$stmt = $db->prepare($insert_sql);
 		
 		$Package = new Package();
-		$stmt->bindParam(':Architecture', $Package->Architecture);
-		$stmt->bindParam(':Bugs', $Package->Bugs);
-		$stmt->bindParam(':Description', $Package->Description);
-		$stmt->bindParam(':Description_md5', $Package->Description_md5);
-		$stmt->bindParam(':Filename', $Package->Filename);
-		$stmt->bindParam(':MD5sum', $Package->MD5sum);
-		$stmt->bindParam(':Maintainer', $Package->Maintainer);
-		$stmt->bindParam(':Origin', $Package->Origin);
-		$stmt->bindParam(':Package', $Package->Package);
-		$stmt->bindParam(':Priority', $Package->Priority);
-		$stmt->bindParam(':SHA1', $Package->SHA1);
-		$stmt->bindParam(':SHA256', $Package->SHA256);
-		$stmt->bindParam(':Section', $Package->Section);
-		$stmt->bindParam(':Size', $Package->Size);
-		$stmt->bindParam(':Supported', $Package->Supported);
-		$stmt->bindParam(':Version', $Package->Version);
-		$stmt->bindParam(':Installed_Size', $Package->Installed_Size);
+		foreach (Package::$attribute_list as $attribute) {
+			$stmt->bindParam(':'.$attribute, $Package->$attribute);
+		}
 				
 		foreach ($array as $big_cpt => $small_array) {
 			$Package->from_array($small_array);
@@ -133,17 +112,16 @@ class PackagesFiles
 	
 	public static function print_packages_stats_from_db($db)
 	{
-		$attribute = 'Maintainer';
 		$result = $db->query("
-			SELECT COUNT ($attribute) AS nb, $attribute as attribute
+			SELECT CAST(Size AS INT)/1024/1024 AS size, Package
 			FROM packages
-			GROUP BY $attribute
-			ORDER BY nb DESC
+			WHERE size > 1000000
+			ORDER BY size DESC
 		");
 		$result->setFetchMode(PDO::FETCH_ASSOC);
 				
 		foreach($result as $row) {
-			echo $row['nb'] . ' x ' . $row['attribute'] . PHP_EOL;
+			echo $row['size'] . ' ' . $row['Package'] . PHP_EOL;
 		}
 	}
 	
