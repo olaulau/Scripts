@@ -7,12 +7,10 @@ require_once './PackagesFiles.class.php';
 $test_file = 'Packages';
 
 $big_array = PackagesFiles::load_file_into_array($test_file);
-PackagesFiles::print_atributes_stats_from_array($big_array);
-
-die;
+// print_r($big_array); die;
 
 
-
+// PackagesFiles::print_attributes_stats_from_array($big_array);
 /*
 résultat :
 
@@ -33,8 +31,11 @@ résultat :
 8320 x Supported
 8320 x Version
 8301 x Installed-Size
+*/
 
- */
+
+$db = PackagesFiles::load_array_into_db($big_array);
+PackagesFiles::print_packages_stats_from_db($db);
 
 
 
