@@ -8,8 +8,9 @@ class Package {
 	public $Package = null;
 	public $Section = null;
 	public $Size = null;
+	public $Version = null;
 	
-	public static $attribute_list = array('Architecture', 'Filename', 'Origin', 'Package', 'Section', 'Size');
+	public static $attribute_list = array('Architecture', 'Filename', 'Origin', 'Package', 'Section', 'Size', 'Version');
 	
 	
 	public function from_array($array) {
