@@ -1,5 +1,8 @@
 <?php
 
+require_once 'launcher.php';
+
+
 class Source {
 	
 	private $deb;
@@ -7,7 +10,8 @@ class Source {
 	private $dist;
 	private $component;
 	
-	public static $packages_filename = 'Packages.bz2';
+	public static $packages_compresed_filename = 'Packages.bz2';
+	public static $packages_filename = 'Packages';
 	public static $default_arch = 'i386';
 	
 	
@@ -43,7 +47,7 @@ class Source {
 	
 	
  	public function get_packages_file_url() {
- 		return $this->uri . '/dists/' . $this->dist . '/' . $this->component . '/' . $this->get_arch_string() . '/' . Source::$packages_filename; 
+ 		return $this->uri . '/dists/' . $this->dist . '/' . $this->component . '/' . $this->get_arch_string() . '/' . Source::$packages_compresed_filename; 
  	}
 	
  	
@@ -52,7 +56,7 @@ class Source {
  		$ch = curl_init();
  		curl_setopt($ch, CURLOPT_URL,$url);
  		
- 		$fp = fopen(Source::$packages_filename, 'w');
+ 		$fp = fopen(Source::$packages_compresed_filename, 'w');
  		curl_setopt($ch, CURLOPT_FILE, $fp);
  		
  		curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -62,8 +66,8 @@ class Source {
  	
  	
  	public function uncompress_packages_file() {
-		$sfp = bzopen(Source::$packages_filename, "r");
- 		$fp = fopen('Packages', "w");
+		$sfp = bzopen(Source::$packages_compresed_filename, "r");
+ 		$fp = fopen(Source::$packages_filename, "w");
  		while (!feof($sfp)) {
  			$string = bzread($sfp, 4096);
  			fwrite($fp, $string, strlen($string));

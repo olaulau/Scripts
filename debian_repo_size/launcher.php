@@ -1,12 +1,39 @@
 #! /usr/bin/php
 <?php
 
+require_once './Exception_Error_handling.php';
 require_once './PackagesFiles.class.php';
+require_once './Source.class.php';
 
 
-$test_file = 'Packages';
+class launcher {
+	
+	private static $db;
+	
+	public function get_db() {
+		return launcher::$db;
+	}
+	
+	public static function prepare_db() {
+		if(!isset(launcher::$db)) {
+			launcher::$db = new PDO('sqlite::memory:');
+			launcher::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+	}
+	
+	
+	public function create_tables() {
+		
+	}
+	
+}
 
-$big_array = PackagesFiles::load_file_into_array($test_file);
+
+
+//////////////////////////////////////
+launcher::prepare_db();
+
+$big_array = PackagesFiles::load_file_into_array(Source::$packages_filename);
 // print_r($big_array); die;
 
 
@@ -34,8 +61,8 @@ résultat :
 */
 
 
-$db = PackagesFiles::load_array_into_db($big_array);
-PackagesFiles::print_packages_stats_from_db($db);
+PackagesFiles::load_array_into_db($big_array);
+PackagesFiles::print_packages_stats();
 
 
 

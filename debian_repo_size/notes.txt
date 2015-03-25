@@ -1,1 +1,13 @@
 https://wiki.debian.org/RepositoryFormat#Overview
+
+http://php.net/manual/en/function.parse-url.php
+http://php.net/manual/en/function.http-build-url.php
+
+
+- est ce qu'on stocke les Packages ou on les intègre directement ? s'il faut les stocker, prévoir arborescence répetoires
+- modèle de données pour sqlite
+- persistance : d'après la date de modif sqlite ?
+- mini ORM sur chaque objet
+- affichage des stats
+- menu CLI ?
+- version web ?

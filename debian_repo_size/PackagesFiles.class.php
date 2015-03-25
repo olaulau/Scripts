@@ -1,6 +1,6 @@
 <?php
 
-require_once './Exception_Error_handling.php';
+require_once 'launcher.php';
 require_once './Package.class.php';
 
 
@@ -37,10 +37,7 @@ class PackagesFiles
 	
 	public static function print_attributes_stats_from_array($array)
 	{
-		$db = new PDO('sqlite::memory:');
-		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		
-		$db->exec("
+		launcher::get_db()->exec("
 			CREATE TABLE IF NOT EXISTS attributes (
 			id INTEGER PRIMARY KEY,
 			attribute TEXT
@@ -50,7 +47,7 @@ class PackagesFiles
 			INSERT INTO attributes (attribute)
 			VALUES (:attribute)
 		";
-		$stmt = $db->prepare($insert);
+		$stmt = launcher::get_db()->prepare($insert);
 		$stmt->bindParam(':attribute', $attribute);
 		
 		foreach ($array as $big_cpt => $small_array) {
@@ -59,7 +56,7 @@ class PackagesFiles
 			}
 		}
 		
-		$result = $db->query("
+		$result = launcher::get_db()->query("
 			SELECT count(*) AS nb, attribute
 			FROM attributes
 			GROUP BY attribute
@@ -73,10 +70,7 @@ class PackagesFiles
 	
 	public static function load_array_into_db($array)
 	{
-		$db = new PDO('sqlite::memory:');
-		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		
-		$create_sql = "	CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, ";
+		$create_sql = "CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, ";
 		$sql_attributes = array();
 		foreach (Package::$attribute_list as $attribute) {
 			$sql_attributes[] = $attribute . " TEXT";
@@ -84,7 +78,7 @@ class PackagesFiles
 		$create_sql .= implode(", ", $sql_attributes);
 		$create_sql .= ")";
 // 		echo $create_sql; die;
-		$db->exec($create_sql);
+		launcher::get_db()->exec($create_sql);
 		
 		$insert_sql = "INSERT INTO packages ( " . implode(", ", Package::$attribute_list) . " ) ";
 		$insert_sql .= " VALUES ( ";
@@ -95,7 +89,7 @@ class PackagesFiles
 		$insert_sql .= implode(", ", $sql_attributes);
 		$insert_sql .= ")";
 // 		echo $insert_sql; die;
-		$stmt = $db->prepare($insert_sql);
+		$stmt = launcher::get_db()->prepare($insert_sql);
 		
 		$Package = new Package();
 		foreach (Package::$attribute_list as $attribute) {
@@ -106,13 +100,12 @@ class PackagesFiles
 			$Package->from_array($small_array);
 			$stmt->execute();
 		}
-		return $db;
 	}
 	
 	
-	public static function print_packages_stats_from_db($db)
+	public static function print_packages_stats()
 	{
-		$result = $db->query("
+		$result = launcher::get_db()->query("
 			SELECT CAST(Size AS INT)/1024/1024 AS size, Package
 			FROM packages
 			WHERE size > 1000000
@@ -121,7 +114,7 @@ class PackagesFiles
 		$result->setFetchMode(PDO::FETCH_ASSOC);
 				
 		foreach($result as $row) {
-			echo $row['size'] . ' ' . $row['Package'] . PHP_EOL;
+			echo $row['size'] . ' Mio ' . $row['Package'] . PHP_EOL;
 		}
 	}
 	
