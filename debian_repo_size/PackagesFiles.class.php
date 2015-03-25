@@ -36,7 +36,7 @@ class PackagesFiles
 	
 	
 	public static function print_attributes_stats_from_array($array)
-	{
+	{ //TODO : still needed ?
 		launcher::get_db()->exec("
 			CREATE TABLE IF NOT EXISTS attributes (
 			id INTEGER PRIMARY KEY,
@@ -70,16 +70,6 @@ class PackagesFiles
 	
 	public static function load_array_into_db($array)
 	{
-		$create_sql = "CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, ";
-		$sql_attributes = array();
-		foreach (Package::$attribute_list as $attribute) {
-			$sql_attributes[] = $attribute . " TEXT";
-		}
-		$create_sql .= implode(", ", $sql_attributes);
-		$create_sql .= ")";
-// 		echo $create_sql; die;
-		launcher::get_db()->exec($create_sql);
-		
 		$insert_sql = "INSERT INTO packages ( " . implode(", ", Package::$attribute_list) . " ) ";
 		$insert_sql .= " VALUES ( ";
 		$sql_attributes = array();
@@ -99,17 +89,18 @@ class PackagesFiles
 		foreach ($array as $big_cpt => $small_array) {
 			$Package->from_array($small_array);
 			$stmt->execute();
+			$id = launcher::get_db()->lastInsertId();
 		}
 	}
 	
 	
 	public static function print_packages_stats()
-	{
+	{ //TODO convert Size attribute into integer
 		$result = launcher::get_db()->query("
 			SELECT CAST(Size AS INT)/1024/1024 AS size, Package
 			FROM packages
-			WHERE size > 1000000
-			ORDER BY size DESC
+			WHERE CAST(Size AS INT) > (1024*1024)
+			ORDER BY CAST(Size AS INT) DESC
 		");
 		$result->setFetchMode(PDO::FETCH_ASSOC);
 				
@@ -119,5 +110,3 @@ class PackagesFiles
 	}
 	
 }
-
-?>

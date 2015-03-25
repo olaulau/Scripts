@@ -25,5 +25,3 @@ class SourcesList {
 // $sl = SourcesList::read_file($filename);
 // print_r($sl);
 // die;
-
-?>

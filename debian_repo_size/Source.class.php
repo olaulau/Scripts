@@ -5,6 +5,8 @@ require_once 'launcher.php';
 
 class Source {
 	
+	private $id;
+	
 	private $deb;
 	private $uri;
 	private $dist;
@@ -28,6 +30,17 @@ class Source {
 			$sources[] = $src;
 		}
 		return $sources;
+	}
+	
+	
+	public function insert_into_db() {
+		$insert_sql = "
+			INSERT INTO packages ( deb, uri, dist, component ) 
+			VALUES ( '" . $this->deb . "', '" . $this->uri . "', '" . $this->dist . "', '" . $this->component . "'
+		)";
+// 		echo $insert_sql; die;
+		$stmt = launcher::get_db()->exec($insert_sql);
+		$this->id = launcher::get_db()->lastInsertId();
 	}
 	
 	
@@ -75,11 +88,26 @@ class Source {
  		bzclose($sfp);
  		fclose($fp);
  	}
+ 	
+ 	
+ 	public static function create_table() {
+ 		$create_sql = "
+ 			CREATE TABLE IF NOT EXISTS sources (
+ 			id INTEGER PRIMARY KEY, 
+ 			deb TEXT,
+ 			uri TEXT,
+ 			dist TEXT,
+ 			component TEXT
+ 		)";
+// 		echo $create_sql; die;
+ 		launcher::get_db()->exec($create_sql);
+ 	}
+ 	
 }
 
 
-$line = 'deb http://archive.ubuntu.com/ubuntu/ utopic main restricted universe multiverse';
-$sources = Source::get_sources_from_line($line);
+// $line = 'deb http://archive.ubuntu.com/ubuntu/ utopic main restricted universe multiverse';
+// $sources = Source::get_sources_from_line($line);
 
 // print_r($sources);
 // die;
@@ -90,6 +118,3 @@ $sources = Source::get_sources_from_line($line);
 
 // $sources[0]->download_packages_file();
 // $sources[0]->uncompress_packages_file();
-
-
-?>

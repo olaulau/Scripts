@@ -23,7 +23,8 @@ class launcher {
 	
 	
 	public function create_tables() {
-		
+		Package::create_table();
+		Source::create_table();
 	}
 	
 }
@@ -31,39 +32,26 @@ class launcher {
 
 
 //////////////////////////////////////
-launcher::prepare_db();
 
+echo "DB INIT ... " . PHP_EOL;
+launcher::prepare_db();
+launcher::create_tables();
+
+echo "DEB ... " . PHP_EOL;
+$debline = 'deb http://archive.ubuntu.com/ubuntu/ utopic main restricted universe multiverse';
+$sources = Source::get_sources_from_line($debline);
+
+echo "DOWNLOAD AND UNCOMPRESS ... " . PHP_EOL;
+$src = $sources[0];
+$src->download_packages_file();
+$src->uncompress_packages_file();
+
+echo "DATA INTEGRATION ... " . PHP_EOL;
 $big_array = PackagesFiles::load_file_into_array(Source::$packages_filename);
 // print_r($big_array); die;
-
-
-// PackagesFiles::print_attributes_stats_from_array($big_array);
-/*
-résultat :
-
-8320 x Architecture
-8320 x Bugs
-8320 x Description
-8320 x Description-md5
-8320 x Filename
-8320 x MD5sum
-8320 x Maintainer
-8320 x Origin
-8320 x Package
-8320 x Priority
-8320 x SHA1
-8320 x SHA256
-8320 x Section
-8320 x Size
-8320 x Supported
-8320 x Version
-8301 x Installed-Size
-*/
-
-
 PackagesFiles::load_array_into_db($big_array);
+unset($big_array);
+
+echo "PRINT STATS ... " . PHP_EOL;
 PackagesFiles::print_packages_stats();
 
-
-
-?>
