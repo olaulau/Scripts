@@ -4,7 +4,7 @@ require_once './Source.class.php';
 
 class SourcesList {
 	
-	private $list = array();
+	public $list = array();
 	
 	public static function read_file($filename) {
 		$sl = new SourcesList();
@@ -25,3 +25,4 @@ class SourcesList {
 // $sl = SourcesList::read_file($filename);
 // print_r($sl);
 // die;
+

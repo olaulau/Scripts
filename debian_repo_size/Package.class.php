@@ -13,7 +13,8 @@ class Package {
 	public $Size = null;
 	public $Version = null;
 	
-	public static $attribute_list = array('Architecture', 'Filename', 'Origin', 'Package', 'Section', 'Size', 'Version');
+	public static $attribute_list =  array('Architecture', 'Filename', 'Origin', 'Package', 'Section', 'Size', 'Version');
+	public static $attribute_types = array('TEXT',         'TEXT',     'TEXT',   'TEXT',    'TEXT',    'INT',  'TEXT');
 	
 	
 	public function from_array($array) {
@@ -35,10 +36,10 @@ class Package {
 	
 	
 	public static function create_table() {
-		$create_sql = "CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, ";
+		$create_sql = "CREATE TABLE IF NOT EXISTS packages ( id INTEGER PRIMARY KEY, source_id NOT NULL REFERENCES source(id), ";
 		$sql_attributes = array();
-		foreach (Package::$attribute_list as $attribute) {
-			$sql_attributes[] = $attribute . " TEXT";
+		foreach (Package::$attribute_list as $i => $attribute) {
+			$sql_attributes[] = $attribute . " " . Package::$attribute_types[$i];
 		}
 		$create_sql .= implode(", ", $sql_attributes);
 		$create_sql .= ")";

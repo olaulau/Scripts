@@ -7,6 +7,10 @@ class Source {
 	
 	private $id;
 	
+	public function get_id(){
+		return $this->id;
+	}
+	
 	private $deb;
 	private $uri;
 	private $dist;
@@ -15,6 +19,10 @@ class Source {
 	public static $packages_compresed_filename = 'Packages.bz2';
 	public static $packages_filename = 'Packages';
 	public static $default_arch = 'i386';
+	
+	public function get_source_line() {
+		return $this->deb . ' ' . $this->uri . ' ' . $this->dist . ' ' . $this->component;
+	}
 	
 	
 	public static function get_sources_from_line($line) {
@@ -35,7 +43,7 @@ class Source {
 	
 	public function insert_into_db() {
 		$insert_sql = "
-			INSERT INTO packages ( deb, uri, dist, component ) 
+			INSERT INTO sources ( deb, uri, dist, component ) 
 			VALUES ( '" . $this->deb . "', '" . $this->uri . "', '" . $this->dist . "', '" . $this->component . "'
 		)";
 // 		echo $insert_sql; die;

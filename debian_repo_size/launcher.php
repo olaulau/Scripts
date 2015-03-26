@@ -2,8 +2,9 @@
 <?php
 
 require_once './Exception_Error_handling.php';
-require_once './PackagesFiles.class.php';
+require_once './PackagesFile.class.php';
 require_once './Source.class.php';
+require_once 'SourcesList.class.php';
 
 
 class launcher {
@@ -37,21 +38,20 @@ echo "DB INIT ... " . PHP_EOL;
 launcher::prepare_db();
 launcher::create_tables();
 
-echo "DEB ... " . PHP_EOL;
-$debline = 'deb http://archive.ubuntu.com/ubuntu/ utopic main restricted universe multiverse';
-$sources = Source::get_sources_from_line($debline);
+echo "DEB's DOWNLOAD, UNCOMPRESS, INTEGRATION ... " . PHP_EOL;
+$sl = SourcesList::read_file('mirror.list');
+foreach ($sl->list as $src) {
+	echo $src->get_source_line() . PHP_EOL;
+	$src->insert_into_db();
+	$src->download_packages_file();
+	$src->uncompress_packages_file();
 
-echo "DOWNLOAD AND UNCOMPRESS ... " . PHP_EOL;
-$src = $sources[0];
-$src->download_packages_file();
-$src->uncompress_packages_file();
-
-echo "DATA INTEGRATION ... " . PHP_EOL;
-$big_array = PackagesFiles::load_file_into_array(Source::$packages_filename);
-// print_r($big_array); die;
-PackagesFiles::load_array_into_db($big_array);
-unset($big_array);
+	$pf = new PackagesFile($src);
+	$pf->load_file_into_array(Source::$packages_filename);
+	$pf->load_array_into_db();
+	unset($pf);
+}
 
 echo "PRINT STATS ... " . PHP_EOL;
-PackagesFiles::print_packages_stats();
+PackagesFile::print_packages_stats();
 
