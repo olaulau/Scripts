@@ -28,6 +28,7 @@ foreach ($list as $file) {
 // print_r($tab);
 // exit;
 
+$cpt = 0;
 foreach ($tab as $date => $files) {
 	$formated_date = substr($date , 0, 4) . '-' . substr($date , 4, 2) . '-' . substr($date , 6, 2) . '_' ;
 	if(!file_exists($formated_date)) {
@@ -35,9 +36,10 @@ foreach ($tab as $date => $files) {
 	}
 	foreach ($files as $file) {
 		rename($file, $formated_date.DIRECTORY_SEPARATOR.$file);
+		$cpt ++;
 	}
 }
 echo "done ! \n";
-echo count($list) . " files moved in " . count($tab) . " directories.\n";
+echo $cpt . " files moved in " . count($tab) . " directories.\n";
 
 ?>
