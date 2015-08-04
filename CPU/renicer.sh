@@ -35,6 +35,15 @@ PIDS_ARRAY+=(${PIDS[@]})
 PIDS=( $(ps -eLf | grep -v "grep" | grep "$PROCESS_NAME" | tr -s ' ' | cut -d' ' -f4 | uniq) )
 PIDS_ARRAY+=(${PIDS[@]})
 
+# filtering duplicates
+#echo ${PIDS_ARRAY[*]}
+PIDS_ARRAY=( $(
+    for el in "${PIDS_ARRAY[@]}"
+    do
+        echo "$el"
+    done | sort | uniq) )
+#echo ${PIDS_ARRAY[*]}
+
 
 ## renicing
 let changed=0
