@@ -1,7 +1,20 @@
 #!/bin/bash
 
+## config vars
 PROCESS_NAME="Counter-Strike"
 NICE=-5
+
+
+## check if root is needed
+if [[ $NICE -lt 0 ]]
+then
+	if [[ $EUID -ne 0 ]]
+	then
+	   echo "This script must be run as root." 1>&2
+	   echo "Maybe try with ' sudo ' ?" 
+	   exit 1
+	fi
+fi
 
 
 PIDS_ARRAY=()
