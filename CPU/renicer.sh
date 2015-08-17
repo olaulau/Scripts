@@ -74,6 +74,8 @@ fi
 if [[ $unchanged -gt 0 ]]
 	then echo "$unchanged processes/threads with unchanged priority"
 fi
-
+if [[ $changed -eq 0 ]] && [[ $unchanged -eq 0 ]]
+	then echo "nothing to do"
+fi
 exit
 
