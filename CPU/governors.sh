@@ -6,15 +6,12 @@ NB_CPU=8
 #governor="ondemand" ## conservative / ondemand / performance
 
 
-## check if root is needed
-if [[ $NICE -lt 0 ]]
+## checking for root
+if [[ $EUID -ne 0 ]]
 then
-	if [[ $EUID -ne 0 ]]
-	then
-	   echo "This script must be run as root." 1>&2
-	   echo "Maybe try with ' sudo ' ?" 1>&2
-	   exit 1
-	fi
+   echo "This script must be run as root." 1>&2
+   echo "Maybe try with ' sudo ' ?" 1>&2
+   exit 1
 fi
 
 
