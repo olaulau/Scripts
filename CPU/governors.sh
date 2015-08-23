@@ -2,9 +2,7 @@
 
 
 NB_CPU=`nproc`
-##aybe make an array ?
-#governor="ondemand" ## conservative / ondemand / performance
-
+declare -a governors=(conservative ondemand performance)
 
 ## checking for root
 if [[ $EUID -ne 0 ]]
@@ -22,11 +20,11 @@ then
 	governor="ondemand"
 else
 	## check the governor parameter
-	if [[ $1 == "conservative" ]] || [[ $1 == "ondemand" ]] || [[ $1 == "performance" ]]
+	if [[ " ${governors[@]} " =~ " ${1} " ]]
 	then
 		governor=$1
 	else
-		echo "governor parameter unknown"
+		echo "governor '${1}' not supported by this system, pick one from '${governors[@]}'"
 		exit 1
 	fi
 fi
@@ -45,7 +43,6 @@ done
 # list scaling mode into an array
 # display scaling modes into help if none provided ?
 # get available scaling modes
-# get cpu number
 
 # CS script to launch it with high priority, performance mode, and return to ondemand when exiting
 
