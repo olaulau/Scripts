@@ -19,13 +19,11 @@ fi
 if [[ $1 == "" ]]
 then
 	# default governor
-	echo "default governor : ondemand"
 	governor="ondemand"
 else
 	## check the governor parameter
 	if [[ $1 == "conservative" ]] || [[ $1 == "ondemand" ]] || [[ $1 == "performance" ]]
 	then
-		echo "applying governor : $1"
 		governor=$1
 	else
 		echo "governor parameter unknown"
@@ -34,6 +32,7 @@ else
 fi
 
 
+echo "applying governor '$governor' on $NB_CPU CPUs"
 let i=0
 while [ $i -lt $NB_CPU ]
 do
@@ -42,8 +41,10 @@ do
 done
 
 
-##todo
-# list scaling mode
+## todo
+# list scaling mode into an array
+# display scaling modes into help if none provided ?
+# get available scaling modes
 # get cpu number
 
 # CS script to launch it with high priority, performance mode, and return to ondemand when exiting
