@@ -1,8 +1,10 @@
 #! /bin/bash
 
 
+## getting system values
 NB_CPU=`nproc`
-declare -a governors=(conservative ondemand performance)
+declare -a governors=(`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors`)
+
 
 ## checking for root
 if [[ $EUID -ne 0 ]]
@@ -40,9 +42,5 @@ done
 
 
 ## todo
-# list scaling mode into an array
-# display scaling modes into help if none provided ?
-# get available scaling modes
-
 # CS script to launch it with high priority, performance mode, and return to ondemand when exiting
 
