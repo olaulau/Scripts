@@ -18,8 +18,9 @@ fi
 ## checking parameter
 if [[ $1 == "" ]]
 then
-	# default governor
-	governor="ondemand"
+	echo "misssiong governor parameter, pick one from '${governors[@]}'"
+	echo "actual governor is `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`"
+	exit 1
 else
 	## check the governor parameter
 	if [[ " ${governors[@]} " =~ " ${1} " ]]
