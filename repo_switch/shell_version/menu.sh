@@ -15,6 +15,7 @@ LANG_PREFIX=${LANG:0:2}
 CURRENT_SCRIPT=${BASH_SOURCE[0]}
 CURRENT_SCRIPT=`readlink -e $CURRENT_SCRIPT`
 DIR=$( cd "$( dirname "$CURRENT_SCRIPT" )" && pwd )
+#echo "CD to directory : $DIR"
 cd $DIR
 
 
@@ -23,21 +24,19 @@ cd $DIR
 if [ ! -f config.sh ]
 then
 	echo "config.sh not found."
-	echo "you should have a look at the ' config.sh.EXAMPLE ' provided."
-	exit
+	echo "you should have a look at the ' config.sh.EXAMPLE ' file provided."
+	exit 1
 fi
 
 
-## load and cheeck config file
+## load and check config file
 . ./config.sh
 if ! [[ ${#TITLES[*]} -gt 0  &&  ${#TITLES[*]} -eq ${#PREFIXES[*]} ]]
 then
-	echo "fichier de config incorrect."
-	exit
+	echo "incorrect config file."
+	exit 1
 fi
-
 let NB=${#TITLES[*]}
-
 
 
 
@@ -45,9 +44,9 @@ let NB=${#TITLES[*]}
 if [ ! -f sources.list.template ]
 then
 	#TODO création seulement si mode auto ou si accepté via menu
-	echo "création du template d'après le fichier sources.list actuel"
+	echo "creating template from actual sources.list file"
 	cp /etc/apt/sources.list sources.list.template
-	#cp sources.list.origin sources.list.template
+	#cp sources.list.origin sources.list.template ## just for tests
 	sed --in-place "s|http://$LANG_PREFIX.archive.ubuntu.com|http://archive.ubuntu.com|g" sources.list.template
 fi
 
@@ -64,7 +63,7 @@ fi
 CHOIX=""
 for ((i=1; i<=NB; i++))
 do
-   	CHOIX[$i-1]="${TITLES[$i]}"
+   	CHOIX[$i-1]="$i ${TITLES[$i]}"
 done
 
 PS3="Dépôt ? "
