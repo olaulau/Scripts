@@ -10,7 +10,11 @@ LANG_PREFIX=${LANG:0:2}
 
 
 
-
+## try to cd to script directory, resolving symlink if any
+CURRENT_SCRIPT=${BASH_SOURCE[0]}
+CURRENT_SCRIPT=`readlink -e $CURRENT_SCRIPT`
+DIR=$( cd "$( dirname "$CURRENT_SCRIPT" )" && pwd )
+cd $DIR
 
 
 
@@ -111,7 +115,7 @@ if [ $status -ne 0 ]
 then
 	echo "ce dépot ne semble pas fonctionner (pour votre distribution), abandon."
 	rm -f sources.list
-	exit
+	exit 1
 fi
 
 
