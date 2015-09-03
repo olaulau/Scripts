@@ -114,7 +114,24 @@ then
 	exit
 fi
 
-echo "done !"
+
+
+
+
+## check for root and copy file if possible
+if [[ $EUID -ne 0 ]]
+then
+	echo "Cannot copy file without root permission." 1>&2
+	echo "next time try with ' sudo ' ?" 1>&2
+	echo "this time you can finish the job yourself by typing ' sudo cp sources.list /etc/apt/ '"
+	echo "don't forget to make a backup first : ' sudo cp /etc/apt/sources.list /etc/apt/sources.list.BAK '"
+	exit 1
+else
+	cp /etc/apt/sources.list /etc/apt/sources.list.BAK
+	cp sources.list /etc/apt/
+	echo "done !"
+fi
+echo "you can run ' apt-get update ' and use the choosen repository. BYE"
 exit
 
 
