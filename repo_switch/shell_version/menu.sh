@@ -45,8 +45,10 @@ then
 	#TODO création seulement si mode auto ou si accepté via menu
 	echo "création du template d'après le fichier sources.list actuel"
 	cp /etc/apt/sources.list sources.list.template
-	sed --in-place "s|http://fr.archive.ubuntu.com|http://archive.ubuntu.com|g" sources.list.template
+	#cp sources.list.origin sources.list.template
+	sed --in-place "s|http://$LANG_PREFIX.archive.ubuntu.com|http://archive.ubuntu.com|g" sources.list.template
 fi
+
 
 
 ## premier menu choix action (auto oupas)
@@ -89,18 +91,15 @@ opt=`echo "$opt" | cut -d' ' -f1`
 rm -f sources.list
 cp sources.list.template sources.list
 
+# ubuntu
 sed --in-place "s|archive.ubuntu.com|${PREFIXES[opt]}archive.ubuntu.com|g" sources.list
 sed --in-place "s|archive.canonical.com|${PREFIXES[opt]}archive.canonical.com|g" sources.list
 sed --in-place "s|extras.ubuntu.com|${PREFIXES[opt]}extras.ubuntu.com|g" sources.list
-
-#echo "done !"
-#exit
-
-#cat sources.list
-
-#exit
-
-
+sed --in-place "s|security.ubuntu.com|${PREFIXES[opt]}security.ubuntu.com|g" sources.list
+# linux mint :
+sed --in-place "s|packages.linuxmint.com|${PREFIXES[opt]}packages.linuxmint.com|g" sources.list
+sed --in-place "s|extra.linuxmint.com|${PREFIXES[opt]}extra.linuxmint.com|g" sources.list
+#TODO : dans un fichier différent de sources.list ?
 
 
 
@@ -110,7 +109,7 @@ let status=$?
 rm -f Release
 if [ $status -ne 0 ]
 then
-	echo "le dépot ne semble pas fonctionner, abandon."
+	echo "ce dépot ne semble pas fonctionner (pour votre distribution), abandon."
 	rm -f sources.list
 	exit
 fi
