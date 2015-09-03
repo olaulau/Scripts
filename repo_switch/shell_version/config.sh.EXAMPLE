@@ -1,5 +1,5 @@
 #! /bin/bash
-
+## please cp this file to ' config.sh ' and fill in the values
 
 TITLES[1]="ubuntu"
 PREFIXES[1]=""

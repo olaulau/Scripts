@@ -1,7 +1,8 @@
 #!/bin/bash
-# Script : menu.sh
+# Script : repo_switch/shell_version/menu.sh
 
 
+## get env values
 . /etc/lsb-release
 #echo $DISTRIB_CODENAME
 
@@ -10,7 +11,7 @@ LANG_PREFIX=${LANG:0:2}
 
 
 
-## try to cd to script directory, resolving symlink if any
+## cd to script directory, resolving symlink if any
 CURRENT_SCRIPT=${BASH_SOURCE[0]}
 CURRENT_SCRIPT=`readlink -e $CURRENT_SCRIPT`
 DIR=$( cd "$( dirname "$CURRENT_SCRIPT" )" && pwd )
@@ -18,15 +19,16 @@ cd $DIR
 
 
 
-## vérif présence fichier de config
+## check config file is here
 if [ ! -f config.sh ]
 then
-	echo "config.sh pas trouvé."
-	echo "vous pouvez prendre exemple sur le config.sh.EXAMPLE fourni."
+	echo "config.sh not found."
+	echo "you should have a look at the ' config.sh.EXAMPLE ' provided."
 	exit
 fi
 
-## chargement config et vérif
+
+## load and cheeck config file
 . ./config.sh
 if ! [[ ${#TITLES[*]} -gt 0  &&  ${#TITLES[*]} -eq ${#PREFIXES[*]} ]]
 then
@@ -35,15 +37,11 @@ then
 fi
 
 let NB=${#TITLES[*]}
-#echo "$NB éléments"
-#for i in ${!TITLES[*]}
-#do
-#	echo "${TITLES[i]} => ${PREFIXES[i]}"
-#done
 
 
 
-## créer un template s'il n'existe pas
+
+## check for template and create it if needed
 if [ ! -f sources.list.template ]
 then
 	#TODO création seulement si mode auto ou si accepté via menu
@@ -66,7 +64,7 @@ fi
 CHOIX=""
 for ((i=1; i<=NB; i++))
 do
-   	CHOIX[$i-1]="$i ${TITLES[$i]}"
+   	CHOIX[$i-1]="${TITLES[$i]}"
 done
 
 PS3="Dépôt ? "
@@ -83,7 +81,6 @@ do
 		break
 	fi
 done
-
 opt=`echo "$opt" | cut -d' ' -f1`
 #echo $opt
 #echo "${TITLES[opt]} => ${PREFIXES[opt]}"
@@ -107,13 +104,13 @@ sed --in-place "s|extra.linuxmint.com|${PREFIXES[opt]}extra.linuxmint.com|g" sou
 
 
 
-## vérifier qu'un miroir est up -> choix automatique au démarrage de la machine
+## check the selected repo is working
 wget --quiet --output-document Release http://${PREFIXES[opt]}archive.ubuntu.com/ubuntu/dists/$DISTRIB_CODENAME/Release
 let status=$?
 rm -f Release
 if [ $status -ne 0 ]
 then
-	echo "ce dépot ne semble pas fonctionner (pour votre distribution), abandon."
+	echo "this repo don't seem to work (for your current distrib), aborting."
 	rm -f sources.list
 	exit 1
 fi
