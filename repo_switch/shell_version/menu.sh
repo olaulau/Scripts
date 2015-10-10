@@ -1,8 +1,7 @@
 #!/bin/bash
-# Script : repo_switch/shell_version/menu.sh
+# Script : menu.sh
 
 
-## get env values
 . /etc/lsb-release
 #echo $DISTRIB_CODENAME
 
@@ -11,42 +10,47 @@ LANG_PREFIX=${LANG:0:2}
 
 
 
-## cd to script directory, resolving symlink if any
-CURRENT_SCRIPT=${BASH_SOURCE[0]}
-CURRENT_SCRIPT=`readlink -e $CURRENT_SCRIPT`
-DIR=$( cd "$( dirname "$CURRENT_SCRIPT" )" && pwd )
-#echo "CD to directory : $DIR"
-cd $DIR
 
 
 
-## check config file is here
+
+## vérif présence fichier de config
 if [ ! -f config.sh ]
 then
-	echo "config.sh not found."
-	echo "you should have a look at the ' config.sh.EXAMPLE ' file provided."
-	exit 1
+	echo "config.sh pas trouvé."
+	echo "vous pouvez prendre exemple sur le config.sh.EXAMPLE fourni."
+	exit
 fi
 
-
-## load and check config file
+## chargement config et vérif
 . ./config.sh
 if ! [[ ${#TITLES[*]} -gt 0  &&  ${#TITLES[*]} -eq ${#PREFIXES[*]} ]]
 then
-	echo "incorrect config file."
-	exit 1
+	echo "fichier de config incorrect."
+	exit
 fi
+
 let NB=${#TITLES[*]}
+#echo "$NB éléments"
+#for i in ${!TITLES[*]}
+#do
+#	echo "${TITLES[i]} => ${PREFIXES[i]}"
+#done
 
 
 
-## check for template and create it if needed
+## créer un template s'il n'existe pas
 if [ ! -f sources.list.template ]
 then
 	#TODO création seulement si mode auto ou si accepté via menu
-	echo "creating template from actual sources.list file"
-	cp /etc/apt/sources.list sources.list.template
-	#cp sources.list.origin sources.list.template ## just for tests
+	echo "création du template d'après le fichier sources.list actuel"
+	if [ $DISTRIB_ID = "LinuxMint" ]
+	then
+		cp /etc/apt/sources.list.d/official-package-repositories.list sources.list.template
+	else
+		cp /etc/apt/sources.list sources.list.template
+	fi
+	#cp sources.list.origin sources.list.template
 	sed --in-place "s|http://$LANG_PREFIX.archive.ubuntu.com|http://archive.ubuntu.com|g" sources.list.template
 fi
 
@@ -80,6 +84,7 @@ do
 		break
 	fi
 done
+
 opt=`echo "$opt" | cut -d' ' -f1`
 #echo $opt
 #echo "${TITLES[opt]} => ${PREFIXES[opt]}"
@@ -103,15 +108,26 @@ sed --in-place "s|extra.linuxmint.com|${PREFIXES[opt]}extra.linuxmint.com|g" sou
 
 
 
-## check the selected repo is working
+## vérifier qu'un miroir est up -> choix automatique au démarrage de la machine
 wget --quiet --output-document Release http://${PREFIXES[opt]}archive.ubuntu.com/ubuntu/dists/$DISTRIB_CODENAME/Release
 let status=$?
 rm -f Release
 if [ $status -ne 0 ]
 then
-	echo "this repo don't seem to work (for your current distrib), aborting."
-	rm -f sources.list
-	exit 1
+	echo "ce dépot ne semble pas fonctionner (pour votre distribution), voulez-vous quand-même l'utiliser ?"
+	select opt in "Oui" "Non"
+	do
+		if [ "$opt" = "Non" ]
+		then
+			rm -f sources.list
+			exit 1
+		elif [ "$opt" = "" ]
+		then
+			echo "Invalid option, try another one continue"
+		else
+			break
+		fi
+	done	
 fi
 
 
@@ -127,8 +143,14 @@ then
 	echo "don't forget to make a backup first : ' sudo cp /etc/apt/sources.list /etc/apt/sources.list.BAK '"
 	exit 1
 else
-	cp /etc/apt/sources.list /etc/apt/sources.list.BAK
-	cp sources.list /etc/apt/
+	if [ $DISTRIB_ID = "LinuxMint" ]
+	then
+		cp /etc/apt/sources.list.d/official-package-repositories.list /etc/apt/sources.list.d/official-package-repositories.list.BAK
+		cp sources.list /etc/apt/sources.list.d/official-package-repositories.list
+	else
+		cp /etc/apt/sources.list /etc/apt/sources.list.BAK
+		cp sources.list /etc/apt/
+	fi
 	echo "done !"
 fi
 echo "you can run ' apt-get update ' and use the choosen repository. BYE"
