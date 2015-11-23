@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cd "$(dirname "$0")" # for execution from another directory without aving to cd (usefull for cron)
+cd "$(dirname "$0")" # for execution from another directory without having to cd (usefull for cron)
 . ./piwigo_sync.conf.sh
 
 

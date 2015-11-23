@@ -9,6 +9,8 @@ LANG_PREFIX=${LANG:0:2}
 #echo $LANG_PREFIX
 
 
+ABSOLUTE_SCRIPT=`realpath "$0"`
+cd "$(dirname "$ABSOLUTE_SCRIPT")" # for execution from another directory without having to cd (usefull for cron)
 
 
 
