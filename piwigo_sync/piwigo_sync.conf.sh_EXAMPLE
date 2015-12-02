@@ -2,7 +2,7 @@
 
 ## fill and rename "piwigo_sync.conf.sh"
 
-PIWIGO_BASE_URL=""
+PIWIGO_BASE_URL="http://mydomain.com/piwigo/"
 PIWIGO_LOGIN=""
 PIWIGO_PASSWORD=""
 
