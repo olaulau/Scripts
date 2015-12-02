@@ -53,6 +53,32 @@ rm -f $OUTPUT_DOCUMENT
 
 
 
+## get category list page so that we can find the pwg_token hidden form field
+ACTION="admin.php?page=cat_list"
+wget --server-response --output-file=$OUTPUT_FILE --output-document=$OUTPUT_DOCUMENT --load-cookies $COOKIE_FILE --save-cookies $COOKIE_FILE --keep-session-cookies --max-redirect=0 $PIWIGO_BASE_URL/$ACTION
+PWG_TOKEN=`cat $OUTPUT_DOCUMENT | grep "pwg_token" | head -n 1 | cut -d'"' -f 6`
+
+#cat $OUTPUT_FILE
+rm -f $OUTPUT_FILE
+#cat $OUTPUT_DOCUMENT
+rm -f $OUTPUT_DOCUMENT
+#cat $COOKIE_FILE
+
+
+
+## photos re-order
+ACTION="/admin.php?page=cat_list"
+POST_DATA="pwg_token=$PWG_TOKEN&order_by=name+DESC&recursive=on&submitAutoOrder=Sauvegarder+l%27ordre"
+wget --server-response --output-file=$OUTPUT_FILE --output-document=$OUTPUT_DOCUMENT --load-cookies $COOKIE_FILE --save-cookies $COOKIE_FILE --keep-session-cookies --max-redirect=0 --post-data "$POST_DATA" $PIWIGO_BASE_URL/$ACTION
+
+#cat $OUTPUT_FILE
+rm -f $OUTPUT_FILE
+#cat $OUTPUT_DOCUMENT
+rm -f $OUTPUT_DOCUMENT
+#cat $COOKIE_FILE
+
+
+
 rm -f $COOKIE_FILE
 rmdir $TEMP
 exit
