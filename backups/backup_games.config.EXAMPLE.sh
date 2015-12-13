@@ -5,6 +5,9 @@
 
 # TEST=" --dry-run"
 
+## general config
+MIN_SIZE=100 # 100MB, to avoid rsyncing garbage of old deleted games over a clean backup
+
 ## backup linux steam games .acf files
 LINUX_STEAM_SRC="/home/$USER/.local/share/Steam/SteamApps/"
 LINUX_STEAM_DEST="/media/SHARED/games/SteamApps (linux)/"
