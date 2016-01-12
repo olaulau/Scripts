@@ -8,12 +8,12 @@ RSYNC="/usr/local/bin/rsync_patched --rsync-path=/usr/local/bin/rsync_patched"
 
 ## backup music
 MUSIC_SUBDIR=""
-MUSIC_SRC="/home/laulau/Music"
-MUSIC_DEST="laulau@srv:/media/raid1/home/laulau/sauvegardes/musique"
+MUSIC_SRC="/home/$USER/Music"
+MUSIC_DEST="$USER@srv:/home/$USER/sauvegardes/musique"
 
 
 ## backup photos
 PHOTO_SUBDIR=""
-PHOTO_SRC="/home/laulau/Pictures/photos_numeriques/"
-PHOTO_DEST="laulau@srv:/media/raid1/home/laulau/sauvegardes/stockage_perso/photos_numeriques"
+PHOTO_SRC="/home/$USER/Pictures/photos_numeriques/"
+PHOTO_DEST="$USER@srv:/home/$USER/sauvegardes/stockage_perso/photos_numeriques"
 
