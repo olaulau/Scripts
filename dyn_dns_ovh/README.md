@@ -13,7 +13,7 @@
 
 GIT way | wget way
 --- | ---
-git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns_ovh | mkdir dyn_dns_ovh && cd dyn_dns_ovh  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.php  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/composer.json <br/> chmod u+x dyn_dns_ovh.php
+git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns_ovh | mkdir dyn_dns_ovh && cd dyn_dns_ovh  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.config.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/composer.json <br/> chmod u+x dyn_dns_ovh.php
 &nbsp;  
 
 **install composer (only if needed) **  
