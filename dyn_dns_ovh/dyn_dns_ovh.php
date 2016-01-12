@@ -1,20 +1,12 @@
 #! /usr/bin/php
 <?php
 
-// config
-	// create API keys here : https://eu.api.ovh.com/createToken/index.cgi?GET=/*&PUT=/*&POST=/*&DELETE=/*
-	// keep the rights on GET POST PUT DELETE on '/*' to be sure it'll work
-$applicationKey = '';
-$applicationSecret = '';
-$consumer_key = '';
-
-$zone = 'domain.fr';
-$subdomain = 'subdomain';
+require_once 'dyn_dns_ovh.config.php';
 
 
 // retrive real external IP address
 $ip_url = "http://myexternalip.com/raw";
-$command = "wget -q -O - $ip_url | tr -d '\n'";
+$command = "wget --inet4-only --quiet -O - $ip_url | tr -d '\n'";
 $external_ip = `$command`;
 // echo $external_ip;
 
@@ -41,8 +33,8 @@ $records = $ovh->get('/domain/zone/' . $zone . '/record', $content);
 foreach ($records as $record_id) {
 	$record = $ovh->get('/domain/zone/' . $zone . '/record/' . $record_id);
 // 	print_r($record);
-// 	echo "<<" . $record['target'] . ">>";
-// 	echo "<<" . $external_ip . ">>";
+// 	echo "<<" . $record['target'] . ">> \n";
+// 	echo "<<" . $external_ip . ">> \n";
 // 	exit;
 	
 	// if zone's target is not actual ip address
@@ -54,6 +46,5 @@ foreach ($records as $record_id) {
 	}
 	else {
 		echo date('r') . " : no DNS change (keeping " . $record['target'] . ") \n";
-	}
-	
+	}	
 }

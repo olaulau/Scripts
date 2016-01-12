@@ -54,22 +54,7 @@ composer
 
 composer install
 
-vim dyn_dns_ovh.php
-change config
+vim dyn_dns_ovh.php  
+remplir config :  
 $applicationKey $applicationSecret $consumer_key
-$zone $subdomain 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+$zone $subdomain
