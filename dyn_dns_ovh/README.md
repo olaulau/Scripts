@@ -1,60 +1,46 @@
-# zaergzergzerg
+# Dyn DNS for OVH API
 
-
-## qsgfegzerg
-
-zergzergzerg
-============
-
-gzegzrg
--------
-
-&nbsp;
- - zergzergzergzerg
-
- - zergzergzerg
- - zergzerg
-
- &nbsp;
-
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
-
-&nbsp;
-
-Markdown | Less | Pretty
---- | --- | ---
-*Still* | `renders` | **nicely**
-1 | 2 | 3
-
-
-
-
-requirements :
+## Requirements
 - PHP 5
 - GIT
+- curl & wget
+- composer (installation instructions below)
 
 
-how to install :
+## How to install
 
-git clone https://github.com/olaulau/Scripts
-cd Scripts/dyn_dns_ovh
-or
-mkdir dyn_dns_ovh && cd dyn_dns_ovh
-wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.php
-wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/composer.json
+**download**  
 
-curl -sS https://getcomposer.org/installer | php
-php composer.phar
-sudo mv composer.phar /usr/local/bin/composer
-composer
+GIT way | wget way
+--- | ---
+git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns_ovh | mkdir dyn_dns_ovh && cd dyn_dns_ovh  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.php  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/composer.json <br/> chmod u+x dyn_dns_ovh.php
+&nbsp;  
 
-composer install
+**install composer (only if needed) **  
+`curl -sS https://getcomposer.org/installer | php`  
 
-vim dyn_dns_ovh.php  
-remplir config :  
-$applicationKey $applicationSecret $consumer_key
-$zone $subdomain
+ | admin way | not admin way
+ --- | --- | ---
+**then** | sudo mv composer.phar   /usr/local/bin/composer |
+**for everyone** | composer install | php composer.phar install
+&nbsp;  
+
+**configure**  
+`vim dyn_dns_ovh.config.php`  
+fill-in config :  
+$applicationKey $applicationSecret $consumer_key  
+$zone $subdomain  
+&nbsp;  
+
+**first run**  
+`./dyn_dns_ovh.php`  
+
+You can  run it in a crontab every minute to be sure any IP change will be propagated quickly to OVH DNS :
+`vim /etc/cron.d/dyn_dns_ovh`
+```
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user  command
+*       *       *       *       *       root    ( cd /root/Scripts/dyn_dns_ovh/ && ./dyn_dns_ovh.php >> dyn_dns_ovh.log )
+```
