@@ -1,28 +1,31 @@
 <?php
 
+require_once('config.inc.php');
+
 // base code found here : https://openclassrooms.com/courses/domxml-flux-rss-de-news
 
 function &init_news_rss(&$xml_file) {
-	$root = $xml_file->createElement ( "rss" ); // création de l'élément
-	$root->setAttribute ( "version", "2.0" ); // on lui ajoute un attribut
-	$root = $xml_file->appendChild ( $root ); // on l'insère dans le nœud parent (ici root qui est "rss")
+	global $conf;
+	$root = $xml_file->createElement ( "rss" );
+	$root->setAttribute ( "version", "2.0" );
+	$root = $xml_file->appendChild ( $root );
 	
 	$channel = $xml_file->createElement ( "channel" );
 	$channel = $root->appendChild ( $channel );
 	
 	$desc = $xml_file->createElement ( "description" );
 	$desc = $channel->appendChild ( $desc );
-	$text_desc = $xml_file->createTextNode ( "L'excellence de l'enseignement supérieur pour des cours en ligne, gratuits et ouverts à tous" ); // on insère du texte entre les balises <description></description>
+	$text_desc = $xml_file->createTextNode ( $conf['description'] );
 	$text_desc = $desc->appendChild ( $text_desc );
 	
 	$link = $xml_file->createElement ( "link" );
 	$link = $channel->appendChild ( $link );
-	$text_link = $xml_file->createTextNode ( "https://www.france-universite-numerique-mooc.fr/cours/" );
+	$text_link = $xml_file->createTextNode ( $conf['link'] );
 	$text_link = $link->appendChild ( $text_link );
 	
 	$title = $xml_file->createElement ( "title" );
 	$title = $channel->appendChild ( $title );
-	$text_title = $xml_file->createTextNode ( "FUN - Les cours" );
+	$text_title = $xml_file->createTextNode ( $conf['title'] );
 	$text_title = $title->appendChild ( $text_title );
 	
 	return $channel;
@@ -30,6 +33,7 @@ function &init_news_rss(&$xml_file) {
 
 
 function add_news_node(&$parent, $root, $id, $pseudo, $titre, $contenu, $date, $url) {
+	global $conf;
 	$item = $parent->createElement ( "item" );
 	$item = $root->appendChild ( $item );
 	
@@ -70,18 +74,17 @@ function add_news_node(&$parent, $root, $id, $pseudo, $titre, $contenu, $date, $
 	
 	$src = $parent->createElement ( "source" );
 	$src = $item->appendChild ( $src );
-	$text_src = $parent->createTextNode ( "https://www.france-universite-numerique-mooc.fr/cours/" );
+	$text_src = $parent->createTextNode ( $conf['link'] );
 	$text_src = $src->appendChild ( $text_src );
 }
 
 
 function rebuild_rss($courses) {
-	// on crée le fichier XML
+	global $conf;
+	//create XML
 	$xml_file = new DOMDocument ( "1.0" );
-	
-	// on initialise le fichier XML pour le flux RSS
+	// init XML file for RSS
 	$channel = init_news_rss ( $xml_file );
-	
 	
 	// loop the results to extract courses
 	foreach ($courses as $course) {
@@ -90,23 +93,11 @@ function rebuild_rss($courses) {
 		$course_url = 'https://www.france-universite-numerique-mooc.fr/courses/' . $course['key'] . '/about';
 // 		echo $course_url;
 // 		echo "<br/> \n";
-		
 		$date = strtotime($course['start_date']);
 		add_news_node ( $xml_file, $channel, $course['id'], $course['universities'][0]['name'], $course['title'], $course['short_description'], date ( "d/m/Y H:i", $date ), $course_url );
 	}
 	
-	
-	
-	
-	// on ajoute chaque news au fichier RSS
-	/*
-	while ( $news = mysql_fetch_assoc ( $nws ) ) {
-		add_news_node ( $xml_file, $channel, $news ["nws_id"], $news ["nws_pseudo"], $news ["nws_titre"], $news ["nws_contenu"], date ( "d/m/Y H:i", $news ["nws_date"] ) );
-	}
-	*/
-// 	add_news_node ( $xml_file, $channel, "nws_id", "nws_pseudo", "nws_titre", "nws_contenu", date ( "d/m/Y H:i" ) );
-	
-	// on écrit le fichier
+	// get XML and output it
 // 	$xml_file->save ( "news_FR_flux.xml" );
 	$xml_output = $xml_file->saveXML();
 	echo $xml_output;
