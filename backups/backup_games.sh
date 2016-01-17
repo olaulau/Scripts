@@ -50,7 +50,6 @@ do
 	backup_linux_steam_library $library/SteamApps/
 done
 
-exit
 
 
 
