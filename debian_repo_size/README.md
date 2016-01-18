@@ -11,7 +11,7 @@ a PHP tool to calculate the size of a debian-based mirror
 ## requirements :
 - PHP5 CLI
 - sqlite for PHP
-- curl for PHP
+- curl for PHP  
 ``apt-get install php5-cli php5-sqlite php5-curl``
 
 ## futures features :
