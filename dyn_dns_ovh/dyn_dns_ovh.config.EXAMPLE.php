@@ -1,4 +1,5 @@
 <?php
+// copy this file to dyn_dns_ovh.config.php and them fill-in the new file
 
 // config
 	// create API keys here : https://eu.api.ovh.com/createToken/index.cgi?GET=/*&PUT=/*&POST=/*&DELETE=/*

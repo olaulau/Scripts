@@ -26,10 +26,13 @@ git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns_ovh | mkdi
 &nbsp;  
 
 **configure**  
-`vim dyn_dns_ovh.config.php`  
+```
+cp dyn_dns_ovh.config.EXAMPLE.php dyn_dns_ovh.config.php  
+vim dyn_dns_ovh.config.php  
+```  
 fill-in config :  
-$applicationKey $applicationSecret $consumer_key  
-$zone $subdomain  
+$applicationKey , $applicationSecret , $consumer_key  
+$zone , $subdomain  
 &nbsp;  
 
 **first run**  

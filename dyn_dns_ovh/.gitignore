@@ -1,4 +1,5 @@
 composer.lock
 vendor/
 dyn_dns_ovh.log
+dyn_dns_ovh.config.php
 
