@@ -9,6 +9,7 @@ $ip_url = "http://myexternalip.com/raw";
 $command = "wget --inet4-only --quiet -O - $ip_url | tr -d '\n'";
 $external_ip = `$command`;
 // echo $external_ip;
+$external_ip = '86.196.101.209';
 
 
 /*
@@ -40,10 +41,10 @@ foreach ($records as $record_id) {
 	// if zone's target is not actual ip address
 	if($record['target'] != $external_ip) {
 		// update the OVH domain record zone
-		$content = array('target' => $external_ip, 'subDomain' => $subdomain, 'ttl' => 2);
+		$content = array('target' => $external_ip, 'subDomain' => $subdomain, 'ttl' => 0);
 		$res = $ovh->put('/domain/zone/' . $zone . '/record/' . $record_id, $content);
 		// refresh the zone
-		$content = array();
+		$content = null;
 		$res = $ovh->post('/domain/zone/' . $zone . '/refresh', $content);
 		echo date('r') . " : DNS updated from " . $record['target'] . " to $external_ip \n";
 	}
