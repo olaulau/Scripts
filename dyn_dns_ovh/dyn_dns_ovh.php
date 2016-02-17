@@ -9,7 +9,6 @@ $ip_url = "http://myexternalip.com/raw";
 $command = "wget --inet4-only --quiet -O - $ip_url | tr -d '\n'";
 $external_ip = `$command`;
 // echo $external_ip;
-$external_ip = '86.196.101.209';
 
 
 /*
