@@ -10,7 +10,7 @@ $tab = array();
 foreach ($list as $file) {
 	if(is_file($file)) {
 // 		echo "$file\n";
-		$regexp = '/^[[:alpha:]]{3}_([[:digit:]]{8})_[[:digit:]]{6}([_~][[:digit:]]{1,})?\.[[:alnum:]]{3}/';
+		$regexp = '/^[[:alpha:]]{1,}_([[:digit:]]{8})_[[:digit:]]{6}(-[[:alpha:]]{1,})?([_~][[:digit:]]{1,})?\.[[:alnum:]]{3}$/';
 		$matches = array();
 		$res = preg_match($regexp, $file, $matches);
 		if($res === 1) {
