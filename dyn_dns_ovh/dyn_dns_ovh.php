@@ -25,29 +25,39 @@ $ovh = new Api( $applicationKey,
 		$applicationSecret,
 		$endpoint_name,
 		$consumer_key);
-
-$content = array('fieldType' => "A", 'subDomain' => $subdomain);
-$records = $ovh->get('/domain/zone/' . $zone . '/record', $content);
-// print_r($records);
-
-foreach ($records as $record_id) {
-	$record = $ovh->get('/domain/zone/' . $zone . '/record/' . $record_id);
-// 	print_r($record);
-// 	echo "<<" . $record['target'] . ">> \n";
-// 	echo "<<" . $external_ip . ">> \n";
-// 	exit;
 	
-	// if zone's target is not actual ip address
-	if($record['target'] != $external_ip) {
-		// update the OVH domain record zone
-		$content = array('target' => $external_ip, 'subDomain' => $subdomain, 'ttl' => 0);
-		$res = $ovh->put('/domain/zone/' . $zone . '/record/' . $record_id, $content);
-		// refresh the zone
-		$content = null;
-		$res = $ovh->post('/domain/zone/' . $zone . '/refresh', $content);
-		echo date('r') . " : DNS updated from " . $record['target'] . " to $external_ip \n";
+try {
+	$content = array('fieldType' => "A", 'subDomain' => $subdomain);
+	$records = $ovh->get('/domain/zone/' . $zone . '/record', $content);
+	// print_r($records);
+}
+catch(Exception $ex) {
+	throw new Exception("erreur d'authentification");
+}
+
+try {
+	foreach ($records as $record_id) {
+		$record = $ovh->get('/domain/zone/' . $zone . '/record/' . $record_id);
+		// 	print_r($record);
+		// 	echo "<<" . $record['target'] . ">> \n";
+		// 	echo "<<" . $external_ip . ">> \n";
+		// 	exit;
+	
+		// if zone's target is not actual ip address
+		if($record['target'] != $external_ip) {
+			// update the OVH domain record zone
+			$content = array('target' => $external_ip, 'subDomain' => $subdomain, 'ttl' => 0);
+			$res = $ovh->put('/domain/zone/' . $zone . '/record/' . $record_id, $content);
+			// refresh the zone
+			$content = null;
+			$res = $ovh->post('/domain/zone/' . $zone . '/refresh', $content);
+			echo date('r') . " : DNS updated from " . $record['target'] . " to $external_ip \n";
+		}
+		else {
+			echo date('r') . " : no DNS change (keeping " . $record['target'] . ") \n";
+		}
 	}
-	else {
-		echo date('r') . " : no DNS change (keeping " . $record['target'] . ") \n";
-	}	
+}
+catch(Exception $ex) {
+	throw new Exception("erreur de domaine");
 }
