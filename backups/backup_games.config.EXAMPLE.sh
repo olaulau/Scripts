@@ -24,3 +24,7 @@ ORIGIN_DEST="/media/SHARED/games/OriginGames/"
 BETHESDA_SRC="/mnt/windows/Program Files (x86)/Bethesda.net Launcher/games/"
 BETHESDA_DEST="/mnt/SHARED/games/Bethesda.net Launcher/games/"
 
+## backup every windows epic game avaiiable
+EPIC_SRC="/mnt/windows/Program Files/Epic Games/"
+EPIC_DEST="/mnt/SHARED/games/Epic Games/"
+

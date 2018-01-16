@@ -98,8 +98,19 @@ done
 cd "$BETHESDA_SRC"
 for GAME in */
 do
-	echo "----- origin : $GAME -----"
+	echo "----- bethesda : $GAME -----"
 	mkdir -p "$BETHESDA_DEST/${GAME}/"
 	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$BETHESDA_SRC/${GAME}/" "$BETHESDA_DEST/${GAME}/"
+done
+
+
+
+## backup every windows epic game avaiiable
+cd "$EPIC_SRC"
+for GAME in */
+do
+	echo "----- epic : $GAME -----"
+	mkdir -p "$EPIC_DEST/${GAME}/"
+	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$EPIC_SRC/${GAME}/" "$EPIC_DEST/${GAME}/"
 done
 
