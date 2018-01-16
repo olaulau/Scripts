@@ -20,3 +20,7 @@ WINDOWS_STEAM_DEST="/media/SHARED/games/SteamApps (windows)/"
 ORIGIN_SRC="/mnt/windows/Program Files (x86)/Origin Games/"
 ORIGIN_DEST="/media/SHARED/games/OriginGames/"
 
+## backup every windows origin game avaiiable
+BETHESDA_SRC="/mnt/windows/Program Files (x86)/Bethesda.net Launcher/games/"
+BETHESDA_DEST="/mnt/SHARED/games/Bethesda.net Launcher/games/"
+

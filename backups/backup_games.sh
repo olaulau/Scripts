@@ -9,6 +9,7 @@ cd "$(dirname "$ABSOLUTE_SCRIPT")" # for execution from another directory withou
 . ./backup_games.config.sh
 
 
+
 ## $1 : linux steam library directory
 function backup_linux_steam_library {
 	## backup linux steam games .acf files
@@ -89,5 +90,16 @@ do
 	echo "----- origin : $GAME -----"
 	mkdir -p "$ORIGIN_DEST/${GAME}/"
 	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$ORIGIN_SRC/${GAME}/" "$ORIGIN_DEST/${GAME}/"
+done
+
+
+
+## backup every windows bethesda game avaiiable
+cd "$BETHESDA_SRC"
+for GAME in */
+do
+	echo "----- origin : $GAME -----"
+	mkdir -p "$BETHESDA_DEST/${GAME}/"
+	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$BETHESDA_SRC/${GAME}/" "$BETHESDA_DEST/${GAME}/"
 done
 
