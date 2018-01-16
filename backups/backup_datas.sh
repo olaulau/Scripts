@@ -16,7 +16,7 @@ MUSIC_DEST=$(printf %q "$MUSIC_DEST/$MUSIC_SUBDIR")
 # echo \
 $RSYNC -rptgoD \
 	--copy-links --size-only \
-	--detect-renamed-lax --delete-after --partial-dir=PARTIAL \
+	--delete-after --partial-dir=PARTIAL \
 	--verbose --stats --progress --itemize-changes \
 	$TEST "$MUSIC_SRC/" "$MUSIC_DEST/"
 # exit
@@ -30,7 +30,7 @@ PHOTO_DEST=$(printf %q "$PHOTO_DEST/$PHOTO_SUBDIR")
 # echo \
 $RSYNC -rptgoD \
 	--copy-links --size-only \
-	--detect-renamed-lax --delete-after --partial-dir=PARTIAL \
+	--delete-after --partial-dir=PARTIAL \
 	--verbose --stats --progress --itemize-changes \
 	$TEST "$PHOTO_SRC/" "$PHOTO_DEST/"
 # exit

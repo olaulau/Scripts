@@ -2,7 +2,8 @@
 ## backup data's config script
 ## please copy / rename to backup_datas.config.sh
 
-RSYNC="/usr/local/bin/rsync_patched --rsync-path=/usr/local/bin/rsync_patched"
+RSYNC=rsync
+#RSYNC="/usr/local/bin/rsync_patched --rsync-path=/usr/local/bin/rsync_patched"
 # TEST=" --dry-run "
 
 
