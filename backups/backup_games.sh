@@ -13,6 +13,7 @@ cd "$(dirname "$ABSOLUTE_SCRIPT")" # for execution from another directory withou
 function backup_linux_steam_library {
 	## backup linux steam games .acf files
 	echo "----- linux steam : *.acf files -----"
+	mkdir -p "$LINUX_STEAM_DEST/"
 	rsync -lptgoD --recursive \
 	--include=*.acf --exclude=* \
 	--verbose --stats --progress \
@@ -29,6 +30,7 @@ function backup_linux_steam_library {
 		SIZE=`du -sm "$SRC/${GAME}/" | cut -f1`
 		if [ "$SIZE" -ge "$MIN_SIZE" ]
 		then
+			mkdir -p "$DEST/${GAME}/"
 			rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$SRC/${GAME}/" "$DEST/${GAME}/"
 		else
 			echo "size is too small, no backup to avoid rsyncing garbage of old deleted games over a clean backup"
@@ -58,6 +60,7 @@ done
 
 ## backup windows steam games .acf files
 echo "----- windows steam : *.acf files -----"
+mkdir -p "$WINDOWS_STEAM_DEST/"
 rsync \
 -lptgoD \
 --recursive \
@@ -73,6 +76,7 @@ cd "$SRC"
 for GAME in */
 do
 	echo "----- windows steam : $GAME -----"
+	mkdir -p "$DEST/${GAME}/"
 	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$SRC/${GAME}/" "$DEST/${GAME}/"
 done
 
@@ -83,6 +87,7 @@ cd "$ORIGIN_SRC"
 for GAME in */
 do
 	echo "----- origin : $GAME -----"
+	mkdir -p "$ORIGIN_DEST/${GAME}/"
 	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$ORIGIN_SRC/${GAME}/" "$ORIGIN_DEST/${GAME}/"
 done
 
