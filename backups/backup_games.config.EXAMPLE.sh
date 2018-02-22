@@ -28,3 +28,7 @@ BETHESDA_DEST="/mnt/SHARED/games/Bethesda.net Launcher/games/"
 EPIC_SRC="/mnt/windows/Program Files/Epic Games/"
 EPIC_DEST="/mnt/SHARED/games/Epic Games/"
 
+## overwatch
+OVERWATCH_SRC="/mnt/windows/Program Files (x86)/Overwatch/"
+OVERWATCH_DEST="/mnt/SHARED/games/Overwatch/"
+

@@ -114,3 +114,10 @@ do
 	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$EPIC_SRC/${GAME}/" "$EPIC_DEST/${GAME}/"
 done
 
+
+## backup windows overwatch
+cd "$OVERWATCH_SRC"
+echo "----- overwatch -----"
+mkdir -p "$OVERWATCH_SRC/"
+rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$OVERWATCH_SRC/" "$OVERWATCH_DEST/"
+
