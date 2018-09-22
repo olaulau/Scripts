@@ -1,3 +1,8 @@
+<a href="phpinfo.php">PhpInfo</a> <br/>
+<a href="/phpmyadmin/">PhpMyAdmin</a> <br/>
+<a href="/adminer/">adminer</a> <br/>
+<br/>
+
 <?php
 
 $home_path = '/home';
