@@ -27,7 +27,12 @@ then
 	
 	echo "getting source website ..."
 	mkdir -p website
-	sshpass -f sshpass.txt ssh $SRC_SHELL_USER@$SRC_SHELL_HOST "tar cf - -C $SRC_SHELL_DIRECTORY ./ | lbzip2" | lbunzip2 | tar x -C website
+	if [ $USE_RSYNC == false ]
+	then
+		sshpass -f sshpass.txt ssh $SRC_SHELL_USER@$SRC_SHELL_HOST "tar cf - -C $SRC_SHELL_DIRECTORY ./ | lbzip2" | lbunzip2 | tar x -C website
+	else
+		sshpass -f sshpass.txt rsync -zrlpt $SRC_SHELL_USER@$SRC_SHELL_HOST:$SRC_SHELL_DIRECTORY/ website/
+	fi
 	
 	rm sshpass.txt
 fi
@@ -37,7 +42,51 @@ fi
 if [ $DO_MODIFICACTIONS == true ]
 then
 	echo "applying modifications to website ..."
+	grep -rl --include="*.php" $SRC_DB_NAME website | xargs sed -i "s|$SRC_DB_NAME|$DEST_DB_NAME|g"
+	grep -rl --include="*.php" $SRC_DB_USER website | xargs sed -i "s|$SRC_DB_USER|$DEST_DB_USER|g"
+	grep -rl --include="*.php" $SRC_DB_PASSWORD website | xargs sed -i "s|$SRC_DB_PASSWORD|$DEST_DB_PASSWORD|g"
+	grep -rl --include="*.php" $SRC_URL_SCHEME://$SRC_URL_HOST/$SRC_URL_DIRECTORY/ website | xargs sed -i "s|$SRC_URL_SCHEME://$SRC_URL_HOST/$SRC_URL_DIRECTORY/|$DEST_URL_SCHEME://$DEST_URL_HOST/$DEST_URL_DIRECTORY/|g"
 	
+	src=$SRC_URL_SCHEME://$SRC_URL_HOST
+	if [ ! -z $SRC_URL_DIRECTORY ]
+		then src=$src/$SRC_URL_DIRECTORY
+	fi
+	dest=$DEST_URL_SCHEME://$DEST_URL_HOST
+	if [ ! -z $DEST_URL_DIRECTORY ]
+		then dest=$dest/$DEST_URL_DIRECTORY
+	fi
+	sed -i "s|$src|$dest|g" database.sql
+	
+	src=$SRC_URL_HOST
+	if [ ! -z $SRC_URL_DIRECTORY ]
+		then src=$src/$SRC_URL_DIRECTORY
+	fi
+	dest=$DEST_URL_HOST
+	if [ ! -z $DEST_URL_DIRECTORY ]
+		then dest=$dest/$DEST_URL_DIRECTORY
+	fi 
+	sed -i "s|$src|$dest|g" database.sql
+	
+	if [ $SRC_URL_DIRECTORY != "" ]
+	then
+		src=$SRC_URL_DIRECTORY/
+		if [ ! -z $DEST_URL_DIRECTORY ]
+		then
+			dest=$DEST_URL_DIRECTORY/
+		else
+			dest=''
+		fi
+		sed -i "s|$src|$dest|g" database.sql
+	fi
+	
+fi
+
+
+## extra modifications
+if [ $DO_EXTRA_MODIFICATIONS == true ]
+then
+	echo "doing extra modifications ..."
+	../extra_modifications.sh
 fi
 
 
@@ -58,7 +107,12 @@ then
 	sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "rm mysqlpass.txt"
 	
 	echo "pushing destination website ..."
-	tar cf - -C website ./ | lbzip2 | sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | tar x -C $DEST_SHELL_DIRECTORY"
+	if [ $USE_RSYNC == false ]
+	then
+		tar cf - -C website ./ | lbzip2 | sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | tar x -C $DEST_SHELL_DIRECTORY"
+	else
+		sshpass -f sshpass.txt rsync -zrlpt website/ $DEST_SHELL_USER@$DEST_SHELL_HOST:$DEST_SHELL_DIRECTORY/
+	fi
 	
 	rm sshpass.txt
 fi

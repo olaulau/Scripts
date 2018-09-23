@@ -4,7 +4,9 @@
 DO_CLEANUP=true
 DO_IMPORT=true
 DO_MODIFICACTIONS=false
+DO_EXTRA_MODIFICATIONS=false
 DO_EXPORT=true
+USE_RSYNC=false # for website transfert, instead of lbzip2 and tar through SSH
 
 
 ## source config
@@ -31,7 +33,7 @@ DEST_SHELL_PASSWORD=""
 DEST_SHELL_DIRECTORY=""
 
 DEST_DB_NAME=""
-DEST_DB_USER=""
+DEST_DB_USER="" # warning : if db user and name are identical on source, they have to be identical too on destination side to avoid replacement collision.
 DEST_DB_PASSWORD=""
 
 DEST_URL_SCHEME="https"

@@ -4,8 +4,6 @@ requirements :
 
 todo :
 - cleanup destination ? cleanup source (after test & ask) ?
-- file modifications
-- remove 'SetHandler' suphp statements from .htaccess fileswhich are specific to our VHFFS install
 - optimisation when running directly on source or destination : do not specify shell host, do file modification where the script is running
 - possibility not to have any database
 - option to exclude a folder (maybe a subsite, migrated in a second time with it's own database)
