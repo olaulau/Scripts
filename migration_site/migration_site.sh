@@ -25,14 +25,14 @@ then
 	if [ ! -z $SRC_DB_NAME ]
 	then
 		echo "getting source database ..."
-		sshpass -f sshpass.txt ssh $SRC_SHELL_USER@$SRC_SHELL_HOST "export MYSQL_PWD=$SRC_DB_PASSWORD && mysqldump $SRC_DB_NAME -u $SRC_DB_USER | lbzip2"  | lbunzip2 > database.sql
+		sshpass -f sshpass.txt ssh -oStrictHostKeyChecking=no $SRC_SHELL_USER@$SRC_SHELL_HOST "export MYSQL_PWD=$SRC_DB_PASSWORD && mysqldump $SRC_DB_NAME -u $SRC_DB_USER | lbzip2" | lbunzip2 > database.sql
 	fi
 	
 	echo "getting source website ..."
 	mkdir -p website
 	if [ $USE_RSYNC == false ]
 	then
-		sshpass -f sshpass.txt ssh $SRC_SHELL_USER@$SRC_SHELL_HOST "tar cf - -C $SRC_SHELL_DIRECTORY ./ | lbzip2" | lbunzip2 | tar x -C website
+		sshpass -f sshpass.txt ssh -oStrictHostKeyChecking=no $SRC_SHELL_USER@$SRC_SHELL_HOST "tar cf - -C $SRC_SHELL_DIRECTORY ./ | lbzip2" | lbunzip2 | tar x -C website
 	else
 		sshpass -f sshpass.txt rsync -zrlpt $SRC_SHELL_USER@$SRC_SHELL_HOST:$SRC_SHELL_DIRECTORY/ website/
 	fi
@@ -75,7 +75,7 @@ then
 		fi 
 		sed -i "s|$src|$dest|g" database.sql
 		
-		if [ $SRC_URL_DIRECTORY != "" ]
+		if [ ! -z $SRC_URL_DIRECTORY ]
 		then
 			src=$SRC_URL_DIRECTORY/
 			if [ ! -z $DEST_URL_DIRECTORY ]
@@ -113,18 +113,18 @@ then
 	then
 		echo "pushing destination database ..."
 		sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "printf \"[client]\npassword=$DEST_DB_PASSWORD\n\" > mysqlpass.txt"
-		cat database.sql | lbzip2 | sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | mysql --defaults-extra-file=mysqlpass.txt -u $DEST_DB_USER $DEST_DB_NAME"
+		cat database.sql | lbzip2 | sshpass -f sshpass.txt ssh -oStrictHostKeyChecking=no $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | mysql --defaults-extra-file=mysqlpass.txt -u $DEST_DB_USER $DEST_DB_NAME"
 		sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "rm mysqlpass.txt"
 	fi
 	
 	
 	
 	echo "pushing destination website ..."
-	sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "mkdir -p $DEST_SHELL_DIRECTORY"
+	sshpass -f sshpass.txt ssh -oStrictHostKeyChecking=no $DEST_SHELL_USER@$DEST_SHELL_HOST "mkdir -p $DEST_SHELL_DIRECTORY"
 	
 	if [ $USE_RSYNC == false ]
 	then
-		tar cf - -C website ./ | lbzip2 | sshpass -f sshpass.txt ssh $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | tar x -C $DEST_SHELL_DIRECTORY"
+		tar cf - -C website ./ | lbzip2 | sshpass -f sshpass.txt ssh -oStrictHostKeyChecking=no $DEST_SHELL_USER@$DEST_SHELL_HOST "lbunzip2 | tar x -C $DEST_SHELL_DIRECTORY"
 	else
 		sshpass -f sshpass.txt rsync -zrlpt website/ $DEST_SHELL_USER@$DEST_SHELL_HOST:$DEST_SHELL_DIRECTORY/
 	fi
