@@ -11,7 +11,6 @@ USE_RSYNC=false # for website transfert, instead of lbzip2 and tar through SSH
 
 ## source config
 SRC_SHELL_HOST=""
-SRC_SHELL_PORT=""
 SRC_SHELL_USER=""
 SRC_SHELL_PASSWORD=""
 SRC_SHELL_DIRECTORY=""
@@ -27,7 +26,6 @@ SRC_URL_DIRECTORY=""
 
 ## destination config
 DEST_SHELL_HOST=""
-DEST_SHELL_PORT=""
 DEST_SHELL_USER=""
 DEST_SHELL_PASSWORD=""
 DEST_SHELL_DIRECTORY=""
