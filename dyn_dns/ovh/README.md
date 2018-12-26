@@ -13,7 +13,7 @@
 
 GIT way | wget way
 --- | ---
-git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns_ovh | mkdir dyn_dns_ovh && cd dyn_dns_ovh  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/dyn_dns_ovh.config.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns_ovh/composer.json <br/> chmod u+x dyn_dns_ovh.php
+git clone https://github.com/olaulau/Scripts <br/> cd Scripts/dyn_dns/ovh | mkdir -p dyn_dns/ovh && cd dyn_dns/ovh  <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns/ovh/dyn_dns_ovh.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns/ovh/dyn_dns_ovh.config.php <br/> wget https://github.com/olaulau/Scripts/raw/master/dyn_dns/ovh/composer.json <br/> chmod u+x dyn_dns_ovh.php
 &nbsp;  
 
 **install composer (only if needed) **  
@@ -45,5 +45,5 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user  command
-*       *       *       *       *       root    ( cd /root/Scripts/dyn_dns_ovh/ && ./dyn_dns_ovh.php >> dyn_dns_ovh.log )
+*       *       *       *       *       root    ( cd /root/Scripts/dyn_dns/ovh/ && ./dyn_dns_ovh.php >> dyn_dns_ovh.log )
 ```
