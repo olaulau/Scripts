@@ -81,6 +81,10 @@ $php_exclude = [
 	'libsodium',
 	'raphf', // segfault on PHP 5.6
 	'http', // depend on raphf
+	'mailparse', // error on CLI
+	'cassandra', // error on PHP 7.3 CLI
+	'lua', // error on PHP 7.3 CLI
+	'mysqlnd_ms', // error on PHP 5.6 CLI
 ];
 $cmd = "sudo apt install -y `apt list 'php-*' 2>/dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2>/dev/null";
 passthru($cmd);
@@ -117,4 +121,12 @@ foreach($phps as $php) {
 	passthru("a2ensite {$php['short']}.$user.conf");
 }
 passthru("sudo systemctl reload apache2");
+
+
+// build global PHP service
+passthru("sudo mkdir -p /root/bin");
+copy('service.sh', '/root/bin/php.sh');
+foreach($phps as $php) {
+	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
+}
 
