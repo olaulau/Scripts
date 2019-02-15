@@ -11,11 +11,10 @@ $user = @$argv[1];
 
 
 // prepare
-/*
 passthru("sudo add-apt-repository -y ppa:ondrej/php");
 passthru("sudo add-apt-repository -y ppa:ondrej/apache2");
 passthru("sudo apt update");
-*/
+passthru("sudo apt dist-upgrade -y");
 
 
 // get PHP version list
@@ -118,8 +117,9 @@ foreach($phps as $php) {
 	$content = str_replace("[MAJOR]", $php[2], $content);
 	$content = str_replace("[MINOR]", $php[3], $content);
 	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.conf", $content);
-	passthru("a2ensite {$php['short']}.$user.conf");
+	passthru("sudo a2ensite {$php['short']}.$user.conf");
 }
+passthru("sudo a2enmod actions fastcgi alias proxy_fcgi");
 passthru("sudo systemctl reload apache2");
 
 
@@ -129,4 +129,5 @@ copy('service.sh', '/root/bin/php.sh');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
 }
+passthru("sudo systemctl daemon-reload");
 
