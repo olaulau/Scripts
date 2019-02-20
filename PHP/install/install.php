@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-// if you don't have any php yet, you have to 'apt install -y php' before executing this script with : 'sudo ./install.sh <user>
+// if you don't have any php yet, you have to 'apt install -y php-cli' before executing this script with : 'sudo ./install.sh <user>
 
 // detect root (force ?)
 //TODO
