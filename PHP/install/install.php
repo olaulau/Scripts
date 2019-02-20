@@ -1,9 +1,14 @@
 #!/usr/bin/php
 <?php
-// if you don't have any php yet, you have to 'apt install -y php-cli' before executing this script with : 'sudo ./install.sh <user>
+// if you don't have any php yet, you have to 'apt install -y php-cli' before executing this script with : 'sudo ./install.php $USER'
 
-// detect root (force ?)
-//TODO
+
+// detect root
+$processUser = posix_getpwuid(posix_geteuid());
+if ($processUser['name'] !== 'root') {
+	die('you must be root, please use "sudo ./install.php $USER" !' . PHP_EOL);
+}
+
 
 // constants
 $php_regex = 'php((\d)\.(\d))';
@@ -18,6 +23,8 @@ passthru("sudo apt dist-upgrade -y");
 
 
 // get PHP version list
+//TODO get and filter listes issued by 'apt list' commandes (instead of php*)
+// php-* , php\d.\d-*
 $cmd = "sudo apt list php* 2> /dev/null | cut -d'/' -f1 | grep -P '^$php_regex$'";
 $res = shell_exec ($cmd);
 $php_versions  = explode(PHP_EOL, trim($res));
@@ -85,7 +92,7 @@ $php_exclude = [
 	'lua', // error on PHP 7.3 CLI
 	'mysqlnd_ms', // error on PHP 5.6 CLI
 ];
-$cmd = "sudo apt install -y `apt list 'php-*' 2>/dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2>/dev/null";
+$cmd = "sudo apt install -y `apt list 'php*' 2>/dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2>/dev/null";
 passthru($cmd);
 
 
