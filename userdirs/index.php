@@ -4,16 +4,22 @@
 <br/>
 
 <?php
-
+// constants
 $home_path = '/home';
 $www_dir = 'public_html';
 
-$home_dir = dir($home_path);
-while( ($user=$home_dir->read()) !== FALSE ) {
-	if($user != '.' && $user != '..') {
-		$user_www_dir = $home_path . '/' . $user . '/' . $www_dir;
-		if(file_exists($user_www_dir)) {
-			echo '<a href="~' . $user . '">' . $user . '</a>';
-		}
+// get users
+$cmd = "getent passwd | sort";
+$users = explode(PHP_EOL, trim(shell_exec($cmd)));
+foreach($users as &$user) {
+	$user = explode(':', $user);
+}
+//var_dump($users); die;
+
+foreach($users as $user) {
+	$user_www_dir = $home_path . '/' . $user[0] . '/' . $www_dir;
+	if(file_exists($user_www_dir)) {
+		echo '<a href="~' . $user[0] . '">' . $user[0] . '</a>';
 	}
 }
+
