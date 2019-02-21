@@ -95,17 +95,21 @@ $cmd = "apt list php* 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-	foreach($php_exclude as $exclude) {
-		if (strpos ($package, $exclude) !== false) {
-			return false;
+		foreach($php_exclude as $exclude) {
+			if (strpos ($package, $exclude) !== false) {
+				return false;
+			}
 		}
+		return true;
 	}
-	return true;
+	else {
+		return false;
 	}
 });
+//var_dump($php_packages); die;
 
 
-$cmd = "apt install -y `apt list 'php*' 2> /dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2> /dev/null";
+$cmd = "apt install -y " . implode(' ', $php_packages) . " 2> /dev/null";
 passthru($cmd);
 
 
