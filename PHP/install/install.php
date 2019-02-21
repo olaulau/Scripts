@@ -153,5 +153,6 @@ copy('service.sh', '/root/bin/php.sh');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
 }
+copy('php.service', '/etc/systemd/system');
 passthru("systemctl daemon-reload");
 
