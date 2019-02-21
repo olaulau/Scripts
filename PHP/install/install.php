@@ -3,7 +3,7 @@
 // if you don't have any php yet, you have to 'apt install -y php-cli' before executing this script with : 'sudo ./install.php $USER'
 
 
-// detect root
+// check root
 $processUser = posix_getpwuid(posix_geteuid());
 if ($processUser['name'] !== 'root') {
 	die('you must be root, please use "sudo ./install.php $USER" !' . PHP_EOL);
@@ -16,16 +16,14 @@ $user = @$argv[1];
 
 
 // prepare
-passthru("sudo add-apt-repository -y ppa:ondrej/php");
-passthru("sudo add-apt-repository -y ppa:ondrej/apache2");
-passthru("sudo apt update");
-passthru("sudo apt dist-upgrade -y");
+passthru("add-apt-repository -y -n ppa:ondrej/php");
+passthru("add-apt-repository -y -n ppa:ondrej/apache2");
+passthru("apt update");
+passthru("apt dist-upgrade -y");
 
 
 // get PHP version list
-//TODO get and filter listes issued by 'apt list' commandes (instead of php*)
-// php-* , php\d.\d-*
-$cmd = "sudo apt list php* 2> /dev/null | cut -d'/' -f1 | grep -P '^$php_regex$'";
+$cmd = "apt list php* 2> /dev/null | cut -d'/' -f1 | grep -P '^$php_regex$' | sort | uniq";
 $res = shell_exec ($cmd);
 $php_versions  = explode(PHP_EOL, trim($res));
 $phps = [];
@@ -37,7 +35,7 @@ foreach($php_versions as $php) {
 	}
 }
 unset($php_versions);
-/* va donner un tableaux d'élements comme celui là :
+/* will get you an array of elements like this :
  array(4) {
     [0]=>
     string(6) "php7.2"
@@ -54,7 +52,7 @@ unset($php_versions);
 
 
 // install all php versions
-passthru("sudo apt install -y php-all-dev 2> /dev/null");
+passthru("apt install -y php-all-dev 2> /dev/null");
 
 
 // install all fpm
@@ -62,7 +60,7 @@ $fpms = [];
 foreach($phps as $php) {
 	$fpms[] = $php[0] . '-fpm';
 }
-$cmd = 'sudo apt install -y ' . implode(' ', $fpms) . ' 2> /dev/null';
+$cmd = 'apt install -y ' . implode(' ', $fpms) . ' 2> /dev/null';
 passthru($cmd);
 
 
@@ -92,7 +90,22 @@ $php_exclude = [
 	'lua', // error on PHP 7.3 CLI
 	'mysqlnd_ms', // error on PHP 5.6 CLI
 ];
-$cmd = "sudo apt install -y `apt list 'php*' 2>/dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2>/dev/null";
+// get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
+$cmd = "apt list php* 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+	foreach($php_exclude as $exclude) {
+		if (strpos ($package, $exclude) !== false) {
+			return false;
+		}
+	}
+	return true;
+	}
+});
+
+
+$cmd = "apt install -y `apt list 'php*' 2> /dev/null | cut -d'/' -f1 | grep -v '" .implode('\|', $php_exclude)."' | sort | uniq` 2> /dev/null";
 passthru($cmd);
 
 
@@ -110,10 +123,10 @@ foreach($phps as $php) {
 	$content = str_replace("group = www-data", "group = $user", $content);
 	$content = str_replace("listen = /run/php/php{$php[1]}-fpm.sock", "listen = /run/php/php{$php[1]}-$user-fpm.sock", $content);
 	file_put_contents("/etc/php/{$php[1]}/fpm/pool.d/$user.conf", $content);
-	passthru("sudo systemctl unmask php{$php[1]}-fpm ");
-	passthru("sudo systemctl enable php{$php[1]}-fpm ");
-	passthru("sudo systemctl disable php{$php[1]}-fpm ");
-	passthru("sudo systemctl restart php{$php[1]}-fpm ");
+	passthru("systemctl unmask php{$php[1]}-fpm ");
+	passthru("systemctl enable php{$php[1]}-fpm ");
+	passthru("systemctl disable php{$php[1]}-fpm ");
+	passthru("systemctl restart php{$php[1]}-fpm ");
 }
 
 
@@ -124,17 +137,17 @@ foreach($phps as $php) {
 	$content = str_replace("[MAJOR]", $php[2], $content);
 	$content = str_replace("[MINOR]", $php[3], $content);
 	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.conf", $content);
-	passthru("sudo a2ensite {$php['short']}.$user.conf");
+	passthru("a2ensite {$php['short']}.$user.conf");
 }
-passthru("sudo a2enmod actions fastcgi alias proxy_fcgi");
-passthru("sudo systemctl reload apache2");
+passthru("a2enmod actions fastcgi alias proxy_fcgi");
+passthru("systemctl reload apache2");
 
 
 // build global PHP service
-passthru("sudo mkdir -p /root/bin");
+passthru("mkdir -p /root/bin");
 copy('service.sh', '/root/bin/php.sh');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
 }
-passthru("sudo systemctl daemon-reload");
+passthru("systemctl daemon-reload");
 
