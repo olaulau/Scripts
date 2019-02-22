@@ -23,9 +23,9 @@ passthru("apt dist-upgrade -y");
 
 
 // get PHP version list
-$cmd = "apt list php* 2> /dev/null | cut -d'/' -f1 | grep -P '^$php_regex$' | sort | uniq";
+$cmd = "apt list 'php*' 2> /dev/null | cut -d'/' -f1 | grep -P '^$php_regex$' | sort | uniq";
 $res = shell_exec ($cmd);
-$php_versions  = explode(PHP_EOL, trim($res));
+$php_versions = explode(PHP_EOL, trim($res));
 $phps = [];
 foreach($php_versions as $php) {
 	$res = preg_match('/^'.$php_regex.'$/', $php, $matches);
@@ -153,6 +153,6 @@ copy('service.sh', '/root/bin/php.sh');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
 }
-copy('php.service', '/etc/systemd/system');
+copy('php.service', '/etc/systemd/system/php.service');
 passthru("systemctl daemon-reload");
 
