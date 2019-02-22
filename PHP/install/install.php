@@ -16,8 +16,8 @@ $user = @$argv[1];
 
 
 // prepare
-passthru("add-apt-repository -y -n ppa:ondrej/php");
-passthru("add-apt-repository -y -n ppa:ondrej/apache2");
+passthru("add-apt-repository -y ppa:ondrej/php");
+passthru("add-apt-repository -y ppa:ondrej/apache2");
 passthru("apt update");
 passthru("apt dist-upgrade -y");
 
@@ -91,10 +91,10 @@ $php_exclude = [
 	'mysqlnd_ms', // error on PHP 5.6 CLI
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
-$cmd = "apt list php* 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d/', $package)) {
 		foreach($php_exclude as $exclude) {
 			if (strpos ($package, $exclude) !== false) {
 				return false;
@@ -131,6 +131,7 @@ foreach($phps as $php) {
 	passthru("systemctl enable php{$php[1]}-fpm ");
 	passthru("systemctl disable php{$php[1]}-fpm ");
 	passthru("systemctl restart php{$php[1]}-fpm ");
+	//TODO simplify, and use php service later.
 }
 
 
