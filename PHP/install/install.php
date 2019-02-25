@@ -91,9 +91,12 @@ $php_exclude = [
 	'mailparse', // error on CLI
 	'cassandra', // error on PHP 7.3 CLI
 	'lua', // error on PHP 7.3 CLI
-	'mysqlnd_ms', // error on PHP 5.6 CLI
+	'mysqlnd-ms', // error on PHP 5.6 CLI
 	'php-google-auth', // break php-google-api-php-client
-//TODO add php* spare dependencies (phpmyadmin ...)
+	'letodms', // too much dependencies
+	'mockery',
+	'sabre',
+	'sodium',
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
@@ -114,8 +117,15 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 });
 //var_dump($php_packages); die;
 
+// DEBUG : temporary storage of packages list
+/*
+//file_put_contents('packages.txt', var_export($php_packages, true));
+eval('$php_packages = ' . file_get_contents('packages.txt') . ';');
+//var_dump($php_packages); die;
+*/
 
-$cmd = "apt install " . implode(' ', $php_packages) . " 2> /dev/null";
+
+$cmd = "apt " . " -y " . " install " . implode(' ', $php_packages) . " 2> /dev/null";
 passthru($cmd, $res);
 
 
