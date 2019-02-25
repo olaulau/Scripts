@@ -54,19 +54,6 @@ unset($php_versions);
 */
 
 
-// install all php versions
-//passthru("apt install -y php-all-dev 2> /dev/null"); //TODO useless
-
-
-// install all fpm
-$fpms = [];
-foreach($phps as $php) {
-	$fpms[] = $php[0] . '-fpm';
-}
-$cmd = 'apt install -y ' . implode(' ', $fpms) . ' 2> /dev/null';
-//passthru($cmd);  //TODO useless
-
-
 // install all php modules
 $php_exclude = [
 	'list', 
