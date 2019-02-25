@@ -18,8 +18,10 @@ $user = @$argv[1];
 // prepare
 passthru("add-apt-repository -y ppa:ondrej/php");
 passthru("add-apt-repository -y ppa:ondrej/apache2");
+passthru("add-apt-repository -y ppa:ondrej/pkg-gearman");
 passthru("apt update");
 passthru("apt dist-upgrade -y");
+
 
 
 // get PHP version list
@@ -35,6 +37,7 @@ foreach($php_versions as $php) {
 	}
 }
 unset($php_versions);
+//var_dump($phps); die;
 /* will get you an array of elements like this :
  array(4) {
     [0]=>
@@ -52,7 +55,7 @@ unset($php_versions);
 
 
 // install all php versions
-passthru("apt install -y php-all-dev 2> /dev/null");
+//passthru("apt install -y php-all-dev 2> /dev/null"); //TODO useless
 
 
 // install all fpm
@@ -61,7 +64,7 @@ foreach($phps as $php) {
 	$fpms[] = $php[0] . '-fpm';
 }
 $cmd = 'apt install -y ' . implode(' ', $fpms) . ' 2> /dev/null';
-passthru($cmd);
+//passthru($cmd);  //TODO useless
 
 
 // install all php modules
@@ -89,10 +92,13 @@ $php_exclude = [
 	'cassandra', // error on PHP 7.3 CLI
 	'lua', // error on PHP 7.3 CLI
 	'mysqlnd_ms', // error on PHP 5.6 CLI
+	'php-google-auth', // break php-google-api-php-client
+//TODO add php* spare dependencies (phpmyadmin ...)
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+//var_dump($php_packages); die;
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d/', $package)) {
 		foreach($php_exclude as $exclude) {
@@ -109,8 +115,8 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 //var_dump($php_packages); die;
 
 
-$cmd = "apt install -y " . implode(' ', $php_packages) . " 2> /dev/null";
-passthru($cmd);
+$cmd = "apt install " . implode(' ', $php_packages) . " 2> /dev/null";
+passthru($cmd, $res);
 
 
 // test if we have to create user conf
