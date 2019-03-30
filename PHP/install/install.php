@@ -138,6 +138,14 @@ foreach($phps as $php) {
 }
 
 
+// configure php (only symlinks to /etc/php/php.ini)
+copy ('/etc/php/'.end($phps)[1].'/fpm/php.ini', '/etc/php/php.ini');
+passthru ('find /etc/php/*/ -name php.ini -exec mv {} {}.BAK \; -exec ln -s /etc/php/php.ini {} \;');
+foreach ($phps as $php) {
+	passthru ("systemctl restart php{$php[1]}-fpm ");
+}
+passthru("systemctl reload apache2");
+
 // configure vhost
 foreach($phps as $php) {
 	$content = file_get_contents("./vhost.conf");
