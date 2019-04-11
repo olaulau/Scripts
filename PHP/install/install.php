@@ -140,7 +140,7 @@ foreach($phps as $php) {
 
 // configure php (only symlinks to /etc/php/php.ini)
 copy ('/etc/php/'.end($phps)[1].'/fpm/php.ini', '/etc/php/php.ini');
-passthru ('find /etc/php/*/ -name php.ini -exec mv {} {}.BAK \; -exec ln -s /etc/php/php.ini {} \;');
+passthru ('find /etc/php/*/ -name php.ini -exec cp {} {}.BAK \;');
 foreach ($phps as $php) {
 	passthru ("systemctl restart php{$php[1]}-fpm ");
 }
@@ -162,9 +162,11 @@ passthru("systemctl reload apache2");
 // build global PHP service
 passthru("mkdir -p /root/bin");
 copy('service.sh', '/root/bin/php.sh');
+file_put_contents('/root/bin/php.sh', 'find /etc/php/*/ -name php.ini -exec cp /etc/php/php.ini {} \;'.PHP_EOL.PHP_EOL,  FILE_APPEND);
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', 'systemctl $action '.$php[0].'-fpm'.PHP_EOL,  FILE_APPEND);
 }
 copy('php.service', '/etc/systemd/system/php.service');
 passthru("systemctl daemon-reload");
+
 
