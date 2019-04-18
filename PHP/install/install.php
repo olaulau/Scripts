@@ -138,7 +138,7 @@ foreach($phps as $php) {
 }
 
 
-// configure php (only symlinks to /etc/php/php.ini)
+// configure php (create common /etc/php/php.ini, backup each php.ini files)
 copy ('/etc/php/'.end($phps)[1].'/fpm/php.ini', '/etc/php/php.ini');
 passthru ('find /etc/php/*/ -name php.ini -exec cp {} {}.BAK \;');
 foreach ($phps as $php) {
