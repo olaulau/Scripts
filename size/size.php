@@ -2,8 +2,8 @@
 <?php
 
 ## config vars
-$MIN_SIZE = 1000;
-$MIN_PART = 0.02;
+$MIN_SIZE = 10; // Go
+$MIN_PART = 0.10; // = 10%
 $DEBUG = FALSE;
 	//$DEBUG = TRUE;
 
@@ -29,7 +29,7 @@ if($DEBUG)	echo "current depth : '$DEPTH'" . PHP_EOL;
 
 
 ## compute
-$command = "du --all --max-depth=1 -m --apparent-size --no-dereference --one-file-system --total \"$DIR\" \
+$command = "du --all --max-depth=1 --block-size=1G --apparent-size --no-dereference --one-file-system --total \"$DIR\" \
  | sort --numeric-sort --reverse ";
 if($DEBUG)	echo "commande : << $command >>" . PHP_EOL;
 exec($command, $array, $return);
