@@ -14,7 +14,7 @@ cd "$(dirname "$ABSOLUTE_SCRIPT")" # for execution from another directory withou
 function backup_linux_steam_library {
 	## backup linux steam games .acf files
 	echo "----- linux steam : *.acf files -----"
-	mkdir -p "$LINUX_STEAM_DEST/"
+	cd "$1/" && mkdir -p "$LINUX_STEAM_DEST/"
 	rsync -lptgoD --recursive \
 	--include=*.acf --exclude=* \
 	--verbose --stats --progress \
@@ -24,8 +24,7 @@ function backup_linux_steam_library {
 	## backup every linux steam game avaiiable
 	SRC="$1/common/"
 	DEST="$LINUX_STEAM_DEST/common/"
-	cd "$SRC"
-	for GAME in */
+	cd "$SRC" && for GAME in */
 	do
 		echo "----- linux steam : $GAME -----"
 		SIZE=`du -sm "$SRC/${GAME}/" | cut -f1`
@@ -62,7 +61,7 @@ done
 ## backup windows steam games .acf files
 echo "----- windows steam : *.acf files -----"
 mkdir -p "$WINDOWS_STEAM_DEST/"
-rsync \
+cd "$WINDOWS_STEAM_SRC/" && rsync \
 -lptgoD \
 --recursive \
 --include=*.acf --exclude=* \
@@ -73,8 +72,7 @@ $TEST "$WINDOWS_STEAM_SRC/" "$WINDOWS_STEAM_DEST/"
 ## backup every windows steam game avaiiable
 SRC="$WINDOWS_STEAM_SRC/common/"
 DEST="/$WINDOWS_STEAM_DEST/common/"
-cd "$SRC"
-for GAME in */
+cd "$SRC" && for GAME in */
 do
 	echo "----- windows steam : $GAME -----"
 	mkdir -p "$DEST/${GAME}/"
@@ -84,8 +82,7 @@ done
 
 
 ## backup every windows origin game avaiiable
-cd "$ORIGIN_SRC"
-for GAME in */
+cd "$ORIGIN_SRC" && for GAME in */
 do
 	echo "----- origin : $GAME -----"
 	mkdir -p "$ORIGIN_DEST/${GAME}/"
@@ -95,8 +92,7 @@ done
 
 
 ## backup every windows bethesda game avaiiable
-cd "$BETHESDA_SRC"
-for GAME in */
+cd "$BETHESDA_SRC" && for GAME in */
 do
 	echo "----- bethesda : $GAME -----"
 	mkdir -p "$BETHESDA_DEST/${GAME}/"
@@ -106,8 +102,7 @@ done
 
 
 ## backup every windows epic game avaiiable
-cd "$EPIC_SRC"
-for GAME in */
+cd "$EPIC_SRC" && for GAME in */
 do
 	echo "----- epic : $GAME -----"
 	mkdir -p "$EPIC_DEST/${GAME}/"
@@ -116,8 +111,9 @@ done
 
 
 ## backup windows overwatch
-cd "$OVERWATCH_SRC"
-echo "----- overwatch -----"
+cd "$OVERWATCH_SRC" && echo "----- overwatch -----"
 mkdir -p "$OVERWATCH_SRC/"
 rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$OVERWATCH_SRC/" "$OVERWATCH_DEST/"
 
+
+## TODO uplay
