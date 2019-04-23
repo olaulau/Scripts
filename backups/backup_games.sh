@@ -116,4 +116,10 @@ mkdir -p "$OVERWATCH_SRC/"
 rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$OVERWATCH_SRC/" "$OVERWATCH_DEST/"
 
 
-## TODO uplay
+## backup every windows epic game avaiiable
+cd "$UPLAY_SRC" && for GAME in */
+do
+	echo "----- epic : $GAME -----"
+	mkdir -p "$UPLAY_DEST/${GAME}/"
+	rsync -a --delete --no-whole-file --verbose --stats --progress $TEST "$UPLAY_SRC/${GAME}/" "$UPLAY_DEST/${GAME}/"
+done
