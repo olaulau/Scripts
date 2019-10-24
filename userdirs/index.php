@@ -18,10 +18,11 @@ unset($user);
 //var_dump($users); die;
 
 // get FPMs
-$cmd = "apt list php*.*-fpm --installed | grep php | cut -d'/' -f1";
+$cmd = "cd /usr/bin && ls php-cgi*.* | grep php | cut -d'/' -f1";
 $fpms = explode(PHP_EOL, trim(shell_exec($cmd)));
+
 foreach($fpms as &$fpm) {
-	if (preg_match('/php((\d)\.(\d))/', $fpm, $matches)) {
+	if (preg_match('/php-cgi((\d)\.(\d))/', $fpm, $matches)) {
 		$matches['short'] = 'php'.$matches[2].$matches[3];
 		$fpm = $matches;
 	}
@@ -35,7 +36,7 @@ foreach($users as $user) {
 	if(file_exists($user_www_dir)) {
 		echo '<a href="~' . $user[0] . '">' . $user[0] . '</a> ';
 		foreach($fpms as $fpm) {
-			echo '<a href="http://' . $fpm['short'] . '.' . $user[0] . '.localhost' . '">' . $fpm[0] . '</a> ';
+			echo ' &nbsp; <a href="http://' . $fpm['short'] . '.' . $user[0] . '.localhost' . '"> PHP ' . $fpm[2] . '.' . $fpm[3] . ' </a>';
 		}
 	}
 }
