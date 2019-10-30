@@ -1,5 +1,13 @@
 #!/bin/bash
 
+##  check root
+sudo -v
+if [ $? -ne 0 ]
+then
+	echo "this script needs sudo rights to run."
+	exit 1
+fi
+
 echo -n "new mysql admin password ? "
 read -s password
 echo
