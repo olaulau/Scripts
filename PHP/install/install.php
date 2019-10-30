@@ -41,17 +41,17 @@ var_dump($argv);
 
 
 // check root
-$processUser = posix_getpwuid(posix_geteuid());
-if ($processUser['name'] !== 'root') {
-	die('you must be root, please use "sudo ./install.php ..." !' . PHP_EOL);
+exec ( "sudo -v" , $output , $return_var );
+if ( $return_var !== 0 ) {
+	die("this script needs sudo rights to run." . PHP_EOL);
 }
+die;
 
 
 // prepare
 if(!$update_mode) {
-	passthru("add-apt-repository -y ppa:ondrej/php");
-	passthru("add-apt-repository -y ppa:ondrej/apache2");
-	// passthru("add-apt-repository -y ppa:ondrej/pkg-gearman");
+	passthru("add-apt-repository --yes --no-update ppa:ondrej/php");
+	passthru("add-apt-repository --yes --no-update ppa:ondrej/apache2");
 	passthru("apt update");
 	passthru("apt full-upgrade -y");
 }
