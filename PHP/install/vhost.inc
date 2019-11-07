@@ -1,5 +1,4 @@
 	ServerName php[MAJOR][MINOR].[USER].localhost
-	#ServerAlias [USER].localhost
 	DocumentRoot /var/www/html
 	<Directory /var/www/html>
 	    Options -Indexes +FollowSymLinks +MultiViews

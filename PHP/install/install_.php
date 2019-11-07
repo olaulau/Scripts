@@ -82,6 +82,7 @@ $php_exclude = [
 	'mockery',
 	'sabre',
 	'sodium',
+	'tideways', // warning, and paid
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
