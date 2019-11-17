@@ -1,4 +1,8 @@
+#!/bin/php
 <?php
+
+// ./gitea_clone_repos.php
+
 
 echo "gitea base url ? ";
 $base_url = trim(fgets(STDIN));
