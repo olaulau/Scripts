@@ -1,4 +1,8 @@
+#!/bin/php
 <?php
+
+// ./github_clone_repos.php <USER>
+// clone every repo of <USER> in current path
 
 if (count($argv) !== 2) {
 	die("parameter problem".PHP_EOL);
@@ -25,11 +29,11 @@ foreach ($repos as $repo) {
 	}
 	
 	$path = getcwd() . '/'.$repo->name;
-	if (file_exists($path)) {
+	if (file_exists($path)) { // skip already existing paths
 		continue;
 	}
-	echo "$repo->name" . PHP_EOL;
 	
+	echo "$repo->name" . PHP_EOL;
 	$cmd = "git clone $repo->ssh_url";
 	exec($cmd, $output, $return_var);
 	echo "$return_var" . PHP_EOL;
