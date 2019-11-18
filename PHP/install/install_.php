@@ -3,8 +3,6 @@
 
 // constants
 $php_regex = 'php((\d)\.(\d))';
-//$user = @$argv[1]; ///////////////////
-
 
 
 // params handling
@@ -28,10 +26,30 @@ elseif(count($argv) === 1) {
 }
 
 
-// prepare
+// prepare apt
 if(!$update_mode) {
-	passthru("add-apt-repository --yes --no-update ppa:ondrej/php");
-	passthru("add-apt-repository --yes --no-update ppa:ondrej/apache2");
+	$os_release = parse_ini_file('/etc/os-release');
+	if ($os_release === false) {
+		die("unable to read os release");
+	}
+	if (empty($os_release['ID'])) {
+		die("unable to find os release");
+	}
+	
+	if ($os_release['ID'] === 'debian') {
+		passthru("wget https://packages.sury.org/php/apt.gpg");
+		passthru("apt-key add apt.gpg");
+		unlink("apt.gpg");
+		file_put_contents("/etc/apt/source.list.d/sury.org.list", "deb https://packages.sury.org/php/ buster main")
+		
+	}
+	else if ($os_release['ID'] === 'ubuntu') {
+		passthru("add-apt-repository --yes --no-update ppa:ondrej/php");
+		passthru("add-apt-repository --yes --no-update ppa:ondrej/apache2");
+	}
+	else {
+		die("invalid os release");
+	}
 	passthru("apt update");
 	passthru("apt full-upgrade -y");
 }
