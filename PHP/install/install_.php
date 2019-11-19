@@ -40,8 +40,8 @@ if(!$update_mode) {
 		passthru("wget https://packages.sury.org/php/apt.gpg");
 		passthru("apt-key add apt.gpg");
 		unlink("apt.gpg");
-		file_put_contents("/etc/apt/source.list.d/sury.org.list", "deb https://packages.sury.org/php/ buster main")
-		
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ buster main".PHP_EOL);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ buster main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes --no-update ppa:ondrej/php");
@@ -101,6 +101,10 @@ $php_exclude = [
 	'sabre',
 	'sodium',
 	'tideways', // warning, and paid
+	
+	'php-cboden-ratchet', // dependency fail on debian testing
+	'php-nesbot-carbon', // dependency fail on debian testing
+	'php-robmorgan-phinx', // dependency fail on debian testing
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
@@ -135,10 +139,11 @@ foreach ($phps as $php) {
 
 // build global PHP service (create php.sh script, add service to systemd)
 passthru("mkdir -p /root/bin");
-copy('php.sh', '/root/bin/php.sh');
+copy('php.sh', '/root/bin/');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', "systemctl \$action $php[0]-fpm".PHP_EOL,  FILE_APPEND);
 }
+chmod ("/root/bin/php.sh", 0744);
 copy('php.service', '/etc/systemd/system/php.service');
 passthru("systemctl daemon-reload");
 
