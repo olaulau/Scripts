@@ -38,7 +38,7 @@ foreach($users as $user) {
 	if(file_exists($user_www_dir)) {
 		echo '<a href="~' . $user[0] . '">' . $user[0] . '</a> ';
 		foreach($fpms as $fpm) {
-			echo ' &nbsp; <a href="http://' . $fpm['short'] . '.' . $user[0] . '.localhost' . '">PHP ' . $fpm[2] . '.' . $fpm[3] . '</a>';
+			echo ' &nbsp; <a href="' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on' ? 'https' : 'http') . '://' . $fpm['short'] . '.' . $user[0] . '.localhost' . '">PHP ' . $fpm[2] . '.' . $fpm[3] . '</a>';
 		}
 	}
 }

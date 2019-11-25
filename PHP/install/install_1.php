@@ -139,7 +139,7 @@ foreach ($phps as $php) {
 
 // build global PHP service (create php.sh script, add service to systemd)
 passthru("mkdir -p /root/bin");
-copy('php.sh', '/root/bin/');
+copy('php.sh', '/root/bin/php.sh');
 foreach($phps as $php) {
 	file_put_contents('/root/bin/php.sh', "systemctl \$action $php[0]-fpm".PHP_EOL,  FILE_APPEND);
 }
@@ -175,13 +175,13 @@ foreach($phps as $php) {
 	$content = str_replace("[USER]", $user, $content);
 	$content = str_replace("[MAJOR]", $php[2], $content);
 	$content = str_replace("[MINOR]", $php[3], $content);
-	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.conf", $content);
+	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.localhost.conf", $content);
 	$content = file_get_contents("./vhost.inc");
 	$content = str_replace("[USER]", $user, $content);
 	$content = str_replace("[MAJOR]", $php[2], $content);
 	$content = str_replace("[MINOR]", $php[3], $content);
-	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.inc", $content);
-	passthru("a2ensite {$php['short']}.$user.conf");
+	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.localhost.inc", $content);
+	passthru("a2ensite {$php['short']}.$user.localhost.conf");
 }
 passthru("a2enmod actions fcgid alias proxy_fcgi");
 passthru("systemctl restart apache2");
