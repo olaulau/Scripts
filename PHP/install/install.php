@@ -42,11 +42,11 @@ elseif(count($argv) === 1) {
 	$user = $argv[0];
 }
 
-// launch sub-script as root
+// launch sub-scripts
 passthru( "sudo ./install_1.php " . implode(' ', $params) );
 if (!empty($user)) {
 	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh $user" );
-	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost  localhost+2" );
+	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost localhost+2" );
 	passthru( "sudo ./install_2.php $user" );
 }
 passthru( "sudo systemctl restart apache2" );

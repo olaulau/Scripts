@@ -50,8 +50,8 @@ if(!$update_mode) {
 	else {
 		die("invalid os release");
 	}
-	passthru("apt update");
-	passthru("apt full-upgrade -y");
+	passthru("apt -qq update");
+	passthru("apt -qq full-upgrade -y");
 }
 
 
