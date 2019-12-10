@@ -10,4 +10,3 @@ fi
 
 find /etc/php/*/ -name php.ini -exec cp /etc/php/php.ini {} \;
 
-
