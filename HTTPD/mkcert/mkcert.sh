@@ -89,5 +89,8 @@ fi
 sudo cp localhost.inc /etc/apache2/sites-available/
 sudo cp localhost.conf /etc/apache2/sites-available/
 sudo a2ensite localhost.conf
+
+
+## enable ssl module
 sudo a2enmod ssl
 

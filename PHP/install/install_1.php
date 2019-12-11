@@ -37,7 +37,7 @@ if(!$update_mode) {
 	}
 	
 	if ($os_release['ID'] === 'debian') {
-		passthru("wget https://packages.sury.org/php/apt.gpg");
+		passthru("wget -q https://packages.sury.org/php/apt.gpg");
 		passthru("apt-key add apt.gpg");
 		unlink("apt.gpg");
 		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ buster main".PHP_EOL);
@@ -125,7 +125,7 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 });
 //var_dump($php_packages); die;
 
-$cmd = "apt " . " -y " . " install " . implode(' ', $php_packages) . " 2> /dev/null";
+$cmd = "apt -qq -y install " . implode(' ', $php_packages) . " 2> /dev/null";
 passthru($cmd, $res);
 
 
