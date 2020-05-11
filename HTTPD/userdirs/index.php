@@ -25,7 +25,7 @@
 		//var_dump($users); die;
 
 		// get FPMs
-		$cmd = "cd /usr/bin && ls php-cgi*.* | grep php | cut -d'/' -f1";
+		$cmd = "cd /usr/bin && ls php-cgi?.? | grep php | cut -d'/' -f1";
 		$fpms = explode(PHP_EOL, trim(shell_exec($cmd)));
 
 		foreach($fpms as &$fpm) {
