@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMMAND='./burn.sh'
-CORES=8
+CORES=`cat /proc/cpuinfo | grep processor | wc -l`
 
 
 PIDS=()
