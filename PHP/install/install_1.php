@@ -185,6 +185,6 @@ foreach($phps as $php) {
 	file_put_contents("/etc/apache2/sites-available/{$php['short']}.$user.localhost.inc", $content);
 	passthru("a2ensite {$php['short']}.$user.localhost.conf");
 }
-passthru("a2enmod actions fcgid alias proxy_fcgi");
+passthru("a2enmod actions rewrite userdir alias proxy_fcgi");
 passthru("systemctl restart apache2");
 
