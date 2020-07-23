@@ -105,6 +105,9 @@ $php_exclude = [
 	'php-nesbot-carbon', // dependency fail on debian testing
 	'php-robmorgan-phinx', // dependency fail on debian testing
 	'php-twig-string-extra', // dependency fail on debian testing
+	'dbgsym', // debug symbols'
+	'recode',
+	'phpunit',
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
