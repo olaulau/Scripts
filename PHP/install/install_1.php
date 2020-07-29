@@ -108,6 +108,11 @@ $php_exclude = [
 	'dbgsym', // debug symbols'
 	'recode',
 	'phpunit',
+	'phalcon4', // conflict with phalcon3 (phalcon) config file
+	'mapscript', // warning already loaded
+	'memcached',
+	'redis',
+	'uopz', // make die and exit not working anymore
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
