@@ -44,8 +44,8 @@ if(!$update_mode) {
 		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ buster main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
-		passthru("add-apt-repository --yes --no-update ppa:ondrej/php");
-		passthru("add-apt-repository --yes --no-update ppa:ondrej/apache2");
+		passthru("add-apt-repository --yes ppa:ondrej/php");
+		passthru("add-apt-repository --yes ppa:ondrej/apache2");
 	}
 	else {
 		die("invalid os release");
@@ -113,6 +113,7 @@ $php_exclude = [
 	'memcached',
 	'redis',
 	'uopz', // make die and exit not working anymore
+	'gearman' // ubuntu 16.04'
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";

@@ -1,7 +1,8 @@
 #!/usr/bin/php
 <?php
 
-// if you don't have any php yet, you have to run 'apt install -y php-cli' before executing this script
+// requirements :
+// apt install -y php-cli curl
 
 // usage : 
 // ./install.php [--<MODE>] [<USER>]
