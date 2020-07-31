@@ -9,6 +9,10 @@ function vd ($var) {
     var_dump($var);
     echo "</pre>";
 }
+function vdd ($var) {
+    vd ($var);
+    die;
+}
 
 
 function restCall ($method, $data) {
@@ -40,29 +44,48 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
     global $conf;
     
     // login
-    $result = restCall('login', array('username' => $conf['ispconfig']['rest']['user'], 'password' => $conf['ispconfig']['rest']['password'], 'client_login' => false));
+    $result = restCall('login', array(
+        'username' => $conf['ispconfig']['rest']['user'],
+        'password' => $conf['ispconfig']['rest']['password'],
+        'client_login' => false)
+    );
+//     vdd($result);
     if($result) {
         $data = json_decode($result, true);
         if(!$data) return false;
         $session_id = $data['response'];
         
         // get dns zone
-        $result = restCall('dns_zone_get', array('session_id' => $session_id, 'primary_id' => ['origin' => $zone.'.']));
+        $result = restCall('dns_zone_get', array(
+            'session_id' => $session_id,
+            'primary_id' => ['origin' => $zone.'.']
+        ));
         if(!$result) die("error");
-        // 	vd(json_decode($result, true));	exit;
+//         vd(json_decode($result, true));	exit;
         $dns_zone = json_decode($result, true)['response'];
         
         // get dns record
-        $result = restCall('dns_a_get', array('session_id' => $session_id, 'primary_id' => ['zone' => $dns_zone[0]['id'], 'name' => $subdomain]));
+        $result = restCall('dns_a_get', array(
+            'session_id' => $session_id,
+            'primary_id' => [
+                'zone' => $dns_zone[0]['id'],
+                'name' => $subdomain
+            ]
+        ));
         if(!$result) die("error");
-        // 	vd(json_decode($result, true));	exit;
+//         vd(json_decode($result, true));	exit;
         $dns_record = json_decode($result, true)['response'][0];
         
         if ($external_ip !== $dns_record['data']) {
             // update dns record
             $old_ip = $dns_record['data'];
             $dns_record['data'] = $external_ip;
-            $result = restCall('dns_a_update', array('session_id' => $session_id, 'client_id' => 1, 'primary_id' => $dns_record['id'], 'params' => $dns_record));
+            $result = restCall('dns_a_update', array(
+                'session_id' => $session_id,
+                'client_id' => 1,
+                'primary_id' => $dns_record['id'],
+                'params' => $dns_record
+            ));
             if(!$result) die("error");
 //             vd(json_decode($result, true));	die;
             $dns_update = json_decode($result, true)['response'];
