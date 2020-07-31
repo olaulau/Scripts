@@ -52,7 +52,17 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
 //     vdd($result);
     if($result) {
         $data = json_decode($result, true);
-        if(!$data) return false;
+//        vdd($data);
+        if(!$data)
+        	die("problem with authentification");
+        if ($data["code"] !== "ok" || empty($data["response"])) {
+       		if(!empty($data["message"])) {
+        		die( $data["message"] );
+        	}
+        	else {
+		    	die("bad authentification");
+        	}
+        }
         $session_id = $data['response'];
         
         // get dns zone
@@ -60,8 +70,9 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
             'session_id' => $session_id,
             'primary_id' => ['origin' => $zone.'.']
         ));
-        if(!$result) die("error");
-//         vd(json_decode($result, true));	exit;
+        if(!$result)
+        	die("error");
+//		vdd(json_decode($result, true));
         $dns_zone = json_decode($result, true)['response'];
         
         // get dns record
@@ -72,9 +83,11 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
                 'name' => $subdomain
             ]
         ));
-        if(!$result) die("error");
-//         vd(json_decode($result, true));	exit;
+        if(!$result)
+        	die("error");
+//		vdd(json_decode($result, true));
         $dns_record = json_decode($result, true)['response'][0];
+//	vdd($dns_record);
         
         if ($external_ip !== $dns_record['data']) {
             // update dns record
@@ -86,7 +99,8 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
                 'primary_id' => $dns_record['id'],
                 'params' => $dns_record
             ));
-            if(!$result) die("error");
+            if(!$result)
+            	die("error");
 //             vd(json_decode($result, true));	die;
             $dns_update = json_decode($result, true)['response'];
             echo date('r') . " : DNS updated from " . $old_ip . " to $external_ip \n";
@@ -98,7 +112,8 @@ function IspGetDnsRecord ($zone, $subdomain, $external_ip) {
         
         // logout
         $result = restCall('logout', array('session_id' => $session_id));
-        if(!$result) print "Could not get logout result\n";
+        if(!$result)
+        	print "Could not get logout result\n";
         
         return $dns_update;
     }
