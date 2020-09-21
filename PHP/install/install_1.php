@@ -113,7 +113,8 @@ $php_exclude = [
 	'memcached',
 	'redis',
 	'uopz', // make die and exit not working anymore
-	'gearman' // ubuntu 16.04'
+	'gearman', // ubuntu 16.04'
+	"enchant", // debian
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
