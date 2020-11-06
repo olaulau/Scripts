@@ -115,11 +115,13 @@ $php_exclude = [
 	'uopz', // make die and exit not working anymore
 	'gearman', // ubuntu 16.04'
 	"enchant", // debian
+	"irods", //no candidates
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-//var_dump($php_packages); die;
+//foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	}
+
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d/', $package)) {
 		foreach($php_exclude as $exclude) {
@@ -133,9 +135,9 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 		return false;
 	}
 });
-//var_dump($php_packages); die;
+//foreach($php_packages as $pack) {     echo $pack . PHP_EOL;   }
 
-$cmd = "apt -qq -y install " . implode(' ', $php_packages) . " 2> /dev/null";
+$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
 passthru($cmd, $res);
 
 
