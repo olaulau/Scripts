@@ -4,7 +4,7 @@
 // ./github_clone_repos.php <USER>
 
 // DESCRIPTION
-// clone every public repo of <USER> in current path
+// clone every public repo of <USER> in archived, forks, and sources directories
 
 
 if (count($argv) !== 2) {
@@ -28,19 +28,19 @@ $repos = json_decode($content);
 // var_dump($repos); die;
 
 
-mkdir(getcwd() . "/github_${user}_sources");
-mkdir(getcwd() . "/github_${user}_archived");
 mkdir(getcwd() . "/github_${user}_forks");
+mkdir(getcwd() . "/github_${user}_archived");
+mkdir(getcwd() . "/github_${user}_sources");
 
 foreach ($repos as $repo) {
 	if ($repo->fork) { // forks
-		$dir = "github_${user}_forks";
+		$dir = getcwd() . "/github_${user}_forks";
 	}
 	elseif ($repo->archived) { // archived
-		$dir = "github_${user}_archived";
+		$dir = getcwd() . "/github_${user}_archived";
 	}
 	else { // sources
-		$dir = "github_${user}_sources";
+		$dir = getcwd() . "/github_${user}_sources";
 	}
 	
 	$path = "$dir/$repo->name";
@@ -52,6 +52,7 @@ foreach ($repos as $repo) {
 	echo "$repo->name" . PHP_EOL;
 	$cmd = "git clone $repo->ssh_url $path";
 	exec($cmd, $output, $return_var);
+	
 	echo "$return_var" . PHP_EOL;
 	foreach ($output as $row) {
 		echo $row . PHP_EOL;
