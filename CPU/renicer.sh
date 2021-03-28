@@ -6,16 +6,8 @@ PROCESS_NAME="Counter-Strike"
 NICE=-5
 
 
-## check if root is needed
-if [[ $NICE -lt 0 ]]
-then
-	if [[ $EUID -ne 0 ]]
-	then
-	   echo "This script must be run as root." 1>&2
-	   echo "Maybe try with ' sudo ' ?" 1>&2
-	   exit 1
-	fi
-fi
+## check root
+sudo -v
 
 
 ## init
@@ -52,7 +44,7 @@ for pid in "${PIDS_ARRAY[@]}"
 do
 	#echo -e
 	#echo " *** $pid *** "
-	result=$(renice -n $NICE $pid)
+	result=$(sudo renice -n $NICE $pid)
 	#echo $result
 	old=$(echo $result | cut -d' ' -f6 | tr -d ',')
 	new=$(echo $result | cut -d' ' -f9)
