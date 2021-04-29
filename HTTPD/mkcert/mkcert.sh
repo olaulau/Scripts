@@ -21,7 +21,7 @@ user=$1
 
 ##  install brew if needed
 is_brew_installed=`whereis brew | cut -d':' -f2 | sed '/^$/d' | wc -l`
-if [ $is_brew_installed -eq 0 ]
+if [ $is_brew_installed -ne 1 ]
 then
 	sudo apt install -y libnss3-tools
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
@@ -37,7 +37,7 @@ fi
 
 ##  install mkcert if needed
 is_brew_installed=`whereis mkcert | cut -d':' -f2 | sed '/^$/d' | wc -l`
-if [ $is_brew_installed -eq 0 ]
+if [ $is_brew_installed -ne 1 ]
 then
 	brew install mkcert
 	echo "mkcert install complete"

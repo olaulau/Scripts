@@ -10,9 +10,9 @@
 // <USER> = unix user to create fpm & vhost
 
 // examples :
-// ./install.php $USER  =>  install all with fpm vhosts for currrent user (dev workstation)
-// ./install.php  =>  install all without fpm and vhost (shared hosting)
-// ./install.php --update [$USER] =>  only install all available packages (new php is out)
+// ./install.php $USER		        =>  install all with fpm vhosts for currrent user (dev workstation)
+// ./install.php					=>  install all without fpm and vhost (shared hosting)
+// ./install.php --update [$USER]   =>  only install all available packages (new php is out)
 
 
 // check root
@@ -47,6 +47,7 @@ elseif(count($argv) === 1) {
 passthru( "sudo ./install_1.php " . implode(' ', $params) );
 if (!empty($user)) {
 	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh $user" );
+	die;
 	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost localhost+2" );
 	passthru( "sudo ./install_2.php $user" );
 }

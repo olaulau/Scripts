@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
-
 // constants
 $php_regex = 'php((\d)\.(\d))';
 
@@ -37,11 +36,11 @@ if(!$update_mode) {
 	}
 	
 	if ($os_release['ID'] === 'debian') {
-		passthru("wget -q https://packages.sury.org/php/apt.gpg");
-		passthru("apt-key add apt.gpg");
-		unlink("apt.gpg");
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ buster main".PHP_EOL);
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ buster main".PHP_EOL, FILE_APPEND);
+		passthru("wget -q https://packages.sury.org/php/apt.gpg -O sury.gpg");
+		passthru("add-apt-key sury.gpg");
+		unlink("sury.gpg");
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/php/ buster main".PHP_EOL);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/apache2/ buster main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes ppa:ondrej/php");
@@ -69,6 +68,11 @@ foreach($php_versions as $php) {
 }
 unset($php_versions);
 //var_dump($phps); die;
+
+//TODO pre install all php versions
+
+//TODO set default PHP to previous last version
+// update-alternatives --set php /usr/bin/php7.4
 
 // install all php modules
 $php_exclude = [
@@ -116,11 +120,17 @@ $php_exclude = [
 	'gearman', // ubuntu 16.04'
 	"enchant", // debian
 	"irods", //no candidates
+	"async-aws",
+	"phpseclib",
+	"ps",
+	"solr-all-dev",
+	"snmp",
+	"decimal",
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-//foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	}
+// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} die;
 
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d/', $package)) {
@@ -135,7 +145,7 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 		return false;
 	}
 });
-//foreach($php_packages as $pack) {     echo $pack . PHP_EOL;   }
+// foreach($php_packages as $pack) {     echo $pack . PHP_EOL;   } die;
 
 $cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
 passthru($cmd, $res);
