@@ -1,4 +1,4 @@
 #!/bin/bash
 
-swapoff -a && swapon -a
+/sbin/swapoff -a && /sbin/swapon -a
 
