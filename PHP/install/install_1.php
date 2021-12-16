@@ -119,7 +119,7 @@ $php_exclude = [
 	'uopz', // make die and exit not working anymore
 	'gearman', // ubuntu 16.04'
 	"enchant", // debian
-	"irods", //no candidates
+	"irods", // no candidates
 	"async-aws",
 	"phpseclib",
 	"ps",

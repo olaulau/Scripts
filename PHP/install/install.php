@@ -47,7 +47,6 @@ elseif(count($argv) === 1) {
 passthru( "sudo ./install_1.php " . implode(' ', $params) );
 if (!empty($user)) {
 	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh $user" );
-	die;
 	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost localhost+2" );
 	passthru( "sudo ./install_2.php $user" );
 }
