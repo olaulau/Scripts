@@ -39,8 +39,8 @@ if(!$update_mode) {
 		passthru("wget -q https://packages.sury.org/php/apt.gpg -O sury.gpg");
 		passthru("add-apt-key sury.gpg");
 		unlink("sury.gpg");
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/php/ buster main".PHP_EOL);
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/apache2/ buster main".PHP_EOL, FILE_APPEND);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/php/ bullseye main".PHP_EOL);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb [signed-by=/usr/share/keyrings/sury.gpg] https://packages.sury.org/apache2/ bullseye main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes ppa:ondrej/php");
@@ -78,7 +78,7 @@ unset($php_versions);
 $php_exclude = [
 	'list', 
 	'composer', 
-	'php-dev', 
+	'dev', 
 	'phpdocumentor', 
 	'psr', 
 	'zend', 
@@ -117,7 +117,7 @@ $php_exclude = [
 	'memcached',
 	'redis',
 	'uopz', // make die and exit not working anymore
-	'gearman', // ubuntu 16.04'
+	'gearman', // ubuntu 16.04
 	"enchant", // debian
 	"irods", // no candidates
 	"async-aws",
@@ -126,6 +126,8 @@ $php_exclude = [
 	"solr-all-dev",
 	"snmp",
 	"decimal",
+	"laravel",
+	"swoole",
 ];
 // get and filter lists issued by 'apt list' commands (instead of php*) : php-* , php\d.\d-*
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
