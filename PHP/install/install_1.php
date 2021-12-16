@@ -16,7 +16,7 @@ if ($update_arg_pos !== false) {
 
 if(count($argv) > 1) {
 	var_dump($argv);
-	die("too many parameters".PHP_EOL);
+	die("too many parameters" . PHP_EOL);
 	
 }
 elseif(count($argv) === 1) {
@@ -29,10 +29,10 @@ elseif(count($argv) === 1) {
 if(!$update_mode) {
 	$os_release = parse_ini_file('/etc/os-release');
 	if ($os_release === false) {
-		die("unable to read os release");
+		die("unable to read os release" . PHP_EOL);
 	}
 	if (empty($os_release['ID'])) {
-		die("unable to find os release");
+		die("unable to find os release" . PHP_EOL);
 	}
 	
 	if ($os_release['ID'] === 'debian') {
@@ -47,7 +47,7 @@ if(!$update_mode) {
 		passthru("add-apt-repository --yes ppa:ondrej/apache2");
 	}
 	else {
-		die("invalid os release");
+		die("invalid os release" . PHP_EOL);
 	}
 	passthru("apt -qq update");
 	passthru("apt -qq full-upgrade -y");
@@ -174,7 +174,7 @@ passthru("systemctl daemon-reload");
 
 // test if we have to create user conf (fpm & vhost)
 if(empty($user)) {
-	die("you didn't specify any user, so no fpm / vhost are created.");
+	die("you didn't specify any user, so no fpm / vhost are created." . PHP_EOL);
 }
 
 

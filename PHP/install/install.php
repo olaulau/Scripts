@@ -35,7 +35,7 @@ if ($update_arg_pos !== false) {
 
 if(count($argv) > 1) {
 	var_dump($argv);
-	die("too many parameters".PHP_EOL);
+	die("too many parameters" . PHP_EOL);
 	
 }
 elseif(count($argv) === 1) {
