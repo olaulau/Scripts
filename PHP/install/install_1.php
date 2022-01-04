@@ -144,6 +144,7 @@ $php_exclude = [
 	"swoole",
 	"elisp", // elpa mode
 	"apigen",
+	"libvirt", // unable to load module
 ];
 
 // get php package list
