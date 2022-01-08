@@ -145,6 +145,7 @@ $php_exclude = [
 	"elisp", // elpa mode
 	"apigen",
 	"libvirt", // unable to load module
+	"solr", // throws deprecated with PHP 8.1 
 ];
 
 // get php package list
