@@ -146,6 +146,7 @@ $php_exclude = [
 	"apigen",
 	"libvirt", // unable to load module
 	"solr", // throws deprecated with PHP 8.1 
+	"mapi", // overrides include_path with kopano
 ];
 
 // get php package list
