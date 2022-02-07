@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# go into script dir
+ABSOLUTE_SCRIPT=`realpath "$0"`
+cd "$(dirname "$ABSOLUTE_SCRIPT")" # for execution from another directory without having to cd (usefull for cron)
+
 # randomly rename a test category
 #./randomize.sh
 

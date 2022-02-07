@@ -35,3 +35,4 @@ $RSYNC -rptgoD \
 	$TEST "$PHOTO_SRC/" "$PHOTO_DEST/"
 # exit
 
+$PHOTO_POST_SCRIPT
