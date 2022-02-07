@@ -1,6 +1,0 @@
-- add code to verify if it's running correctly or not
-
-- migrate to piwigo API :
-http://piwigo.org/doc/doku.php?id=dev:webapi:start
-http://piwigo.org/demo/tools/ws.htm
-http://<my piwigo site>/tools/ws.htm

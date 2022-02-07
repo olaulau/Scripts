@@ -1,0 +1,3 @@
+[submodule "WEB/piwigo_sync/piwigo-scripts"]
+	path = WEB/piwigo_sync/piwigo-scripts
+	url = https://github.com/pommes-frites/piwigo-scripts
