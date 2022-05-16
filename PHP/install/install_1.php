@@ -69,7 +69,7 @@ foreach($php_versions as $php) {
 	}
 }
 unset($php_versions);
-//var_dump($phps); die;
+// var_dump($phps); die;
 
 
 // pre install all php versions
@@ -147,19 +147,54 @@ $php_exclude = [
 	"libvirt", // unable to load module
 	"solr", // throws deprecated with PHP 8.1 
 	"mapi", // overrides include_path with kopano
+	"guestfs", // warning on PHP 8.1
+	"adldap2", // dependency pb with lavavel & symfony
+	"protobuf", // deprecated php 8.1
+	"geos", // warning php 7.4
+// 	"laravel", "illuminate", "symfony", "dragonmantank", /////////////////
 ];
+
 
 // get php package list
 $cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} die;
+
+// filter only real php packages
+$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+});
+// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+
 
 // get already installed php packages
 $cmd = "apt list --installed 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 $installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-//	foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} die;
+// foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($installed_packages) . PHP_EOL; die;
 
-// filter pakages
+
+// filter out installed packages
+$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
+	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+		foreach($installed_packages as $exclude) {
+			if (strpos ($package, $exclude) !== false) {
+				return false;
+			}
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+});
+// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+
+
+// filter out excluded packages
 $php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
 		foreach($php_exclude as $exclude) {
@@ -173,10 +208,12 @@ $php_packages = array_filter ($php_packages, function ($package) use ($php_exclu
 		return false;
 	}
 });
-//	foreach($php_packages as $pack) {     echo $pack . PHP_EOL;   } die;
+// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
 
-// install  packages
+
+// install packages
 $cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
+// echo $cmd; die;
 passthru($cmd, $res);
 
 
