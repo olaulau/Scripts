@@ -1,4 +1,9 @@
 #!/bin/bash
+  
+devices=`blkid | grep 'TYPE="swap"' | cut -d':' -f1`
 
-/sbin/swapoff -a && /sbin/swapon -a
-
+for device in $devices
+do
+    /sbin/swapoff $device
+    /sbin/swapon $device
+done
