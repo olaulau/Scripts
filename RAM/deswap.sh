@@ -1,6 +1,6 @@
 #!/bin/bash
   
-devices=`blkid | grep 'TYPE="swap"' | cut -d':' -f1`
+devices=`/sbin/blkid | grep 'TYPE="swap"' | cut -d':' -f1`
 
 for device in $devices
 do
