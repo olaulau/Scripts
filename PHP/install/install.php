@@ -43,6 +43,7 @@ elseif(count($argv) === 1) {
 	$user = $argv[0];
 }
 
+
 // launch sub-scripts
 passthru( "sudo ./install_1.php " . implode(' ', $params) );
 if (!empty($user)) {

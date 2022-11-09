@@ -113,17 +113,18 @@ $php_exclude = [
 	'cassandra', // error on PHP 7.3 CLI
 	'lua', // error on PHP 7.3 CLI
 	'mysqlnd-ms', // error on PHP 5.6 CLI
-	'php-google-auth', // break php-google-api-php-client
+	'google-auth', // break php-google-api-php-client
 	'letodms', // too much dependencies
 	'mockery',
 	'sabre',
 	'sodium',
 	'tideways', // warning, and paid
-	'php-cboden-ratchet', // dependency fail on debian testing
-	'php-nesbot-carbon', // dependency fail on debian testing
-	'php-robmorgan-phinx', // dependency fail on debian testing
-	'php-twig-string-extra', // dependency fail on debian testing
-	'dbgsym', // debug symbols'
+	'cboden-ratchet', // dependency fail on debian testing
+	'nesbot-carbon', // dependency fail on debian testing
+	'robmorgan-phinx', // dependency fail on debian testing
+	'twig-string-extra', // dependency fail on debian testing
+	'dbgsym', // debug symbols
+	"phpdbg",
 	'recode',
 	'phpunit',
 	'phalcon4', // conflict with phalcon3 (phalcon) config file
@@ -151,7 +152,8 @@ $php_exclude = [
 	"adldap2", // dependency pb with lavavel & symfony
 	"protobuf", // deprecated php 8.1
 	"geos", // warning php 7.4
-// 	"laravel", "illuminate", "symfony", "dragonmantank", /////////////////
+ 	"laravel", "illuminate", "symfony", "dragonmantank",
+ 	"ratchet", "grpc", "stomp",
 ];
 
 
@@ -181,7 +183,7 @@ $installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
 $php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
 	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
 		foreach($installed_packages as $exclude) {
-			if (strpos ($package, $exclude) !== false) {
+			if ($package === $exclude) {
 				return false;
 			}
 		}
@@ -253,7 +255,7 @@ foreach($phps as $php) {
 	$content = str_replace("listen = /run/php/php{$php[1]}-fpm.sock", "listen = /run/php/php{$php[1]}-$user-fpm.sock", $content);
 	file_put_contents("/etc/php/{$php[1]}/fpm/pool.d/$user.conf", $content);
 }
-passthru('systemctl list-unit-files | grep "php.*fpm" | cut -d' ' -f1 | xargs systemctl unmask');
+passthru('systemctl list-unit-files | grep "php.*fpm" | cut -d" " -f1 | xargs systemctl unmask');
 passthru("systemctl disable php");
 passthru("systemctl restart php");
 
