@@ -253,8 +253,7 @@ foreach($phps as $php) {
 	$content = str_replace("listen = /run/php/php{$php[1]}-fpm.sock", "listen = /run/php/php{$php[1]}-$user-fpm.sock", $content);
 	file_put_contents("/etc/php/{$php[1]}/fpm/pool.d/$user.conf", $content);
 }
-passthru("systemctl unmask php");
-passthru("systemctl enable php");
+passthru('systemctl list-unit-files | grep "php.*fpm" | cut -d' ' -f1 | xargs systemctl unmask');
 passthru("systemctl disable php");
 passthru("systemctl restart php");
 
