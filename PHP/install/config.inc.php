@@ -1,6 +1,6 @@
 <?php
 
-// php package excluion list
+// php package exclusion list
 $php_exclude = [
 	'list', 
 	'composer', 
@@ -66,6 +66,5 @@ $php_exclude = [
 	"geos", // warning php 7.4
  	"laravel", "illuminate", "symfony", "dragonmantank",
  	"ratchet", "grpc", "stomp",
+	"psr", "phalcon5", "memcache", "mongodb", "oauth", "xdebug", "yaml", "propro", "inotify", "rrd", "ssh2", "uploadprogress", "xhprof", "excimer", "zeroc-ice", 
 ];
-
-

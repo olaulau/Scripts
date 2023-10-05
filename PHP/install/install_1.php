@@ -40,9 +40,12 @@ if(!$update_mode) {
 		passthru("wget -q https://packages.sury.org/php/apt.gpg -O sury.gpg");
 		rename("sury.gpg", "/etc/apt/trusted.gpg.d/sury.gpg");
 
-		unlink("/etc/apt/sources.list.d/sury.org.list");
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ bullseye main".PHP_EOL, FILE_APPEND);
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ bullseye main".PHP_EOL, FILE_APPEND);
+		if(file_exists("/etc/apt/sources.list.d/sury.org.list"))
+		{
+			unlink("/etc/apt/sources.list.d/sury.org.list");
+		}
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ " . $os_release['VERSION_CODENAME'] . " main".PHP_EOL, FILE_APPEND);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ " . $os_release['VERSION_CODENAME'] . " main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes ppa:ondrej/php");
