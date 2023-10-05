@@ -1,19 +1,19 @@
 # features
 - use Sury PHP & Apache debian repo
-- install all PHP versions with the most php modules it can  
+- install all PHP versions
+    - with the most PHP modules it can, minus blacklist
+    or
+    - with whitelisted PHP modules
 - optionnally create apache-fpm virtualhost for each PHP version for the specified user, with HTTPS enabled  
   
   
 # requirements
 sudo apt install wget curl php git  
   
-https://blog.gabrielsagnard.fr/brew-sur-linux-linuxbrew/  
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"  
-	test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)  
-	test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)  
-	test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile  
-	echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile  
-  
+for mkcert :
+https://packages.debian.org/search?keywords=mkcert&searchon=names&suite=all&section=all  
+https://blog.gabrielsagnard.fr/brew-sur-linux-linuxbrew/ (auto installed)  
+
   
 # installation
 git clone <project>  
