@@ -20,7 +20,7 @@ user=$1
 
 
 ## check dependencies
-sudo apt install mkcert
+sudo apt install mkcert libnss3-tools
 is_brew_installed=`whereis mkcert | cut -d':' -f2 | sed '/^$/d' | wc -l`
 if [ $is_brew_installed -ne 1 ]
 then
@@ -28,7 +28,6 @@ then
 	is_brew_installed=`whereis brew | cut -d':' -f2 | sed '/^$/d' | wc -l`
 	if [ $is_brew_installed -ne 1 ]
 	then
-		sudo apt install -y libnss3-tools
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 		test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
 		test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)

@@ -211,4 +211,3 @@ foreach($phps as $php) {
 }
 passthru("a2enmod actions rewrite userdir alias proxy_fcgi");
 passthru("systemctl restart apache2");
-
