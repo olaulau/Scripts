@@ -40,9 +40,9 @@ foreach($params as $key => $value) {
 
 // launch sub-scripts
 passthru( "sudo $env ./install_1.php " . implode(' ', $params) );
-if (!empty($user)) {
-	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh $user" );
+if (!empty($params["user"])) {
+	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh " . $params["user"] );
 	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost localhost+2" );
-	passthru( "sudo ./install_2.php $user" );
+	passthru( "sudo ./install_2.php " . $params["user"] );
 }
 passthru( "sudo systemctl restart apache2" );
