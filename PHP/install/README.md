@@ -31,9 +31,14 @@ cd <project>/PHP/install
   
   
 # usage
+./install.php [--update] [--packages=<package_mode>] [--user=<USER>]
+--update : only install packages
+<package_mode> = blacklist / whitelist. without this option, no additional package will be installed
+<USER> = unix user to create fpm & vhost
+
+# examples
 - php dev workstation  
-./install.php [--update] <user>  
+./install.php [--update] --user=<user>  
   
 - php virtualhost server  
-./install.php [--update]  
-
+./install.php [--update]

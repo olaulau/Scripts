@@ -93,4 +93,3 @@ sudo a2ensite localhost.conf
 
 ## enable ssl module
 sudo a2enmod ssl
-

@@ -5,29 +5,13 @@
 $php_regex = 'php((\d)\.(\d))';
 
 
-// params handling
-unset($argv[0]); // script name, useless
-
-$update_mode = false;
-$update_arg_pos = array_search('--update', $argv);
-if ($update_arg_pos !== false) {
-	$update_mode = true;
-	unset($argv[$update_arg_pos]);
-}
-
-if(count($argv) > 1) {
-	var_dump($argv);
-	die("too many parameters" . PHP_EOL);
-	
-}
-elseif(count($argv) === 1) {
-	$argv = array_values($argv);
-	$user = $argv[0];
-}
+// param handling
+$user = getenv("user");
+$update = getenv("update");
 
 
 // prepare apt
-if(!$update_mode) {
+if($update == 0) {
 	$os_release = parse_ini_file('/etc/os-release');
 	if ($os_release === false) {
 		die("unable to read os release" . PHP_EOL);

@@ -1,20 +1,6 @@
 #!/usr/bin/php
 <?php
 
-// requirements :
-// apt install -y php-cli curl
-
-// usage : 
-// ./install.php [--<MODE>] [<USER>]
-// <MODE> = update (only packages)
-// <USER> = unix user to create fpm & vhost
-
-// examples :
-// ./install.php $USER		        =>  install all with fpm vhosts for currrent user (dev workstation)
-// ./install.php					=>  install all without fpm and vhost (shared hosting)
-// ./install.php --update [$USER]   =>  only install all available packages (new php is out)
-
-
 // check root
 exec ( "sudo -v" , $output , $return_var );
 if ( $return_var !== 0 ) {
@@ -23,33 +9,40 @@ if ( $return_var !== 0 ) {
 
 
 // params handling
-unset($argv[0]); // script name, useless
-$params = $argv;
+unset($argv[0]); // remove useless script name
+$params = [];
+foreach($argv as $arg)
+{
+	if(str_starts_with($arg, "--"))
+	{
+		$arg = substr($arg, 2);
+		if(str_contains($arg, "="))
+		{
+			list($key, $value) = explode("=", $arg);
+			$params [$key] = $value;
+		}
+		else
+		{
+			$params [$arg] = true;
+		}
+	}
+}
+// var_dump($params); die;
 
-$update_mode = false;
-$update_arg_pos = array_search('--update', $argv);
-if ($update_arg_pos !== false) {
-	$update_mode = true;
-	unset($argv[$update_arg_pos]);
-}
 
-if(count($argv) > 1) {
-	var_dump($argv);
-	die("too many parameters" . PHP_EOL);
-	
+// format params as env vars to pass them kindly to subscripts
+$env = "";
+foreach($params as $key => $value) {
+	$env .= "$key=$value ";
 }
-elseif(count($argv) === 1) {
-	$argv = array_values($argv);
-	$user = $argv[0];
-}
+// var_dump($env); die;
 
 
 // launch sub-scripts
-passthru( "sudo ./install_1.php " . implode(' ', $params) );
+passthru( "sudo $env ./install_1.php " . implode(' ', $params) );
 if (!empty($user)) {
 	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh $user" );
 	passthru( "cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh localhost localhost+2" );
 	passthru( "sudo ./install_2.php $user" );
 }
 passthru( "sudo systemctl restart apache2" );
-

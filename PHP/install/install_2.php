@@ -24,4 +24,3 @@ foreach($phps as $php) {
 	passthru("cd ../../HTTPD/mkcert/ && ./ssl_vhost.sh php$php.$user.localhost _wildcard.$user.localhost");
 }
 passthru("systemctl restart apache2");
-
