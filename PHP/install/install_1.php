@@ -7,7 +7,7 @@ $php_regex = 'php((\d)\.(\d))';
 
 // param handling
 $update = getenv("update");
-$package = getenv("package");
+$packages = getenv("packages");
 $user = getenv("user");
 
 
@@ -76,7 +76,7 @@ passthru($cmd, $res);
 // update-alternatives --set php /usr/bin/php7.4
 
 
-if(!empty($package) && ( $package === "blacklist" || $package === "whitelist" )) {
+if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist" )) {
 	// get php package list
 	$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
 	$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
@@ -116,7 +116,7 @@ if(!empty($package) && ( $package === "blacklist" || $package === "whitelist" ))
 	});
 	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
 	
-	if($package === "blacklist") {
+	if($packages === "blacklist") {
 		// filter out excluded packages from possible
 		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
 			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
@@ -132,16 +132,16 @@ if(!empty($package) && ( $package === "blacklist" || $package === "whitelist" ))
 			}
 		});
 	}
-	elseif($package === "whitelist") {
+	elseif($packages === "whitelist") {
 		// filter in include list from possible
-		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+		$php_packages = array_filter ($php_packages, function ($package) use ($php_include) {
 			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-				foreach($php_exclude as $exclude) {
-					if (strpos ($package, $exclude) !== false) {
-						return false;
+				foreach($php_include as $include) {
+					if (strpos ($package, $include) !== false) {
+						return true;
 					}
 				}
-				return true;
+				return false;
 			}
 			else {
 				return false;
