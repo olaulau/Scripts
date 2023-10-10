@@ -102,50 +102,35 @@ if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist"
 	
 	// filter out installed packages
 	$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
-		if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-			foreach($installed_packages as $exclude) {
-				if ($package === $exclude) {
-					return false;
-				}
+		foreach($installed_packages as $exclude) {
+			if ($package === $exclude) {
+				return false;
 			}
-			return true;
 		}
-		else {
-			return false;
-		}
+		return true;
 	});
 	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
 	
 	if($packages === "blacklist") {
 		// filter out excluded packages from possible
 		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-				foreach($php_exclude as $exclude) {
-					if (strpos ($package, $exclude) !== false) {
-						return false;
-					}
+			foreach($php_exclude as $exclude) {
+				if (strpos ($package, $exclude) !== false) {
+					return false;
 				}
-				return true;
 			}
-			else {
-				return false;
-			}
+			return true;
 		});
 	}
 	elseif($packages === "whitelist") {
 		// filter in include list from possible
 		$php_packages = array_filter ($php_packages, function ($package) use ($php_include) {
-			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-				foreach($php_include as $include) {
-					if (strpos ($package, $include) !== false) {
-						return true;
-					}
+			foreach($php_include as $include) {
+				if (preg_match('/^php-'.$include.'/', $package) || preg_match('/^php\d\.\d-'.$include.'/', $package)) {
+					return true;
 				}
-				return false;
 			}
-			else {
-				return false;
-			}
+			return false;
 		});
 	}
 	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
