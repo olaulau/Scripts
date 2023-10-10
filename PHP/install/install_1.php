@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
-
 // constants
 $php_regex = 'php((\d)\.(\d))';
 
@@ -29,8 +28,12 @@ if($update == 0) {
 		{
 			unlink("/etc/apt/sources.list.d/sury.org.list");
 		}
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ " . $os_release['VERSION_CODENAME'] . " main".PHP_EOL, FILE_APPEND);
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ " . $os_release['VERSION_CODENAME'] . " main".PHP_EOL, FILE_APPEND);
+		$os_version_codename = $os_release['VERSION_CODENAME'];
+		if($os_version_codename === "trixie") { // testing
+			$os_version_codename = "bookworm"; // latest debian (12)
+		}
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ $os_version_codename main".PHP_EOL, FILE_APPEND);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ $os_version_codename main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes ppa:ondrej/php");

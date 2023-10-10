@@ -15,7 +15,6 @@ $php_include = [
 	"fpm",
 	"gd",
 	"getid3",
-	"gmagick",
 	"gmp",
 	"igbinary",
 	"image-text",

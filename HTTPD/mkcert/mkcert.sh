@@ -20,7 +20,7 @@ user=$1
 
 
 ## check dependencies
-sudo apt install mkcert libnss3-tools
+sudo apt install -y mkcert libnss3-tools
 is_brew_installed=`whereis mkcert | cut -d':' -f2 | sed '/^$/d' | wc -l`
 if [ $is_brew_installed -ne 1 ]
 then

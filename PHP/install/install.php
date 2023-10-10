@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
-
 // check root
 exec ( "sudo -v" , $output , $return_var );
 if ( $return_var !== 0 ) {
