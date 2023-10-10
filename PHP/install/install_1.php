@@ -6,8 +6,9 @@ $php_regex = 'php((\d)\.(\d))';
 
 
 // param handling
-$user = getenv("user");
 $update = getenv("update");
+$package = getenv("package");
+$user = getenv("user");
 
 
 // prepare apt
@@ -75,67 +76,86 @@ passthru($cmd, $res);
 // update-alternatives --set php /usr/bin/php7.4
 
 
-// get php package list
-$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
-$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-
-// filter only real php packages
-require_once "config.inc.php";
-$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-		return true;
-	}
-	else {
-		return false;
-	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// get already installed php packages
-$cmd = "apt list --installed 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
-$installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-// foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($installed_packages) . PHP_EOL; die;
-
-
-// filter out installed packages
-$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-		foreach($installed_packages as $exclude) {
-			if ($package === $exclude) {
+if(!empty($package) && ( $package === "blacklist" || $package === "whitelist" )) {
+	// get php package list
+	$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+	$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+	
+	// filter only real php packages
+	require_once "config.inc.php";
+	$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+		if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	
+	// get already installed php packages
+	$cmd = "apt list --installed 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+	$installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+	// foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($installed_packages) . PHP_EOL; die;
+	
+	
+	// filter out installed packages
+	$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
+		if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+			foreach($installed_packages as $exclude) {
+				if ($package === $exclude) {
+					return false;
+				}
+			}
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	if($package === "blacklist") {
+		// filter out excluded packages from possible
+		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+				foreach($php_exclude as $exclude) {
+					if (strpos ($package, $exclude) !== false) {
+						return false;
+					}
+				}
+				return true;
+			}
+			else {
 				return false;
 			}
-		}
-		return true;
+		});
 	}
-	else {
-		return false;
-	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// filter out excluded packages
-$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-		foreach($php_exclude as $exclude) {
-			if (strpos ($package, $exclude) !== false) {
+	elseif($package === "whitelist") {
+		// filter in include list from possible
+		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+			if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+				foreach($php_exclude as $exclude) {
+					if (strpos ($package, $exclude) !== false) {
+						return false;
+					}
+				}
+				return true;
+			}
+			else {
 				return false;
 			}
-		}
-		return true;
+		});
 	}
-	else {
-		return false;
-	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// install packages
-$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
-// echo $cmd; die;
-passthru($cmd, $res);
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	
+	// install packages
+	$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
+	// echo $cmd; die;
+	passthru($cmd, $res);
+}
 
 
 // configure php (create common /etc/php/php.ini, backup each php.ini files)
