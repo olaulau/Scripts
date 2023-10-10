@@ -126,7 +126,9 @@ if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist"
 		// filter in include list from possible
 		$php_packages = array_filter ($php_packages, function ($package) use ($php_include) {
 			foreach($php_include as $include) {
-				if (preg_match('/^php-'.$include.'/', $package) || preg_match('/^php\d\.\d-'.$include.'/', $package)) {
+				if (
+					// preg_match('/^php-'.$include.'$/', $package) || 
+					preg_match('/^php\d\.\d-'.$include.'$/', $package)) {
 					return true;
 				}
 			}
