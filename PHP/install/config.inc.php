@@ -39,7 +39,6 @@ $php_include = [
 	"parser",
 	"pear",
 	"pgsql",
-	"psr",
 	"redis",
 	"soap",
 	"snmp",

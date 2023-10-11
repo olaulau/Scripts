@@ -40,7 +40,7 @@ if($update == 0) {
 		passthru("add-apt-repository --yes ppa:ondrej/apache2");
 	}
 	else {
-		die("invalid os release" . PHP_EOL);
+		die("unsupported OS" . PHP_EOL);
 	}
 	passthru("apt -qq update");
 	passthru("apt -qq full-upgrade -y");
