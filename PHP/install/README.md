@@ -38,7 +38,8 @@ cd <project>/PHP/install
 
 # examples
 - php dev workstation  
-./install.php [--update] --user=<user>  
+./install.php [--update] --packages=whitelist --user=<user>  
   
 - php virtualhost server  
-./install.php [--update]
+./install.php [--update] --packages=whitelist
+
