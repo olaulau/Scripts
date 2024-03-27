@@ -19,26 +19,26 @@ fi
 user=$1
 
 
-##  install brew if needed
-is_brew_installed=`whereis brew | cut -d':' -f2 | sed '/^$/d' | wc -l`
-if [ $is_brew_installed -ne 1 ]
-then
-	sudo apt install -y libnss3-tools
-	sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
-	test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-	test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-	test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-	echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
-	echo "brew install complete"
-else
-	echo "brew is already installed"
-fi
-
-
-##  install mkcert if needed
+## check dependencies
+sudo apt install -y mkcert libnss3-tools
 is_brew_installed=`whereis mkcert | cut -d':' -f2 | sed '/^$/d' | wc -l`
 if [ $is_brew_installed -ne 1 ]
 then
+	##  install brew if needed
+	is_brew_installed=`whereis brew | cut -d':' -f2 | sed '/^$/d' | wc -l`
+	if [ $is_brew_installed -ne 1 ]
+	then
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+		test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+		test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+		test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+		echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+		echo "brew install complete"
+	else
+		echo "brew is already installed"
+	fi
+	
+	##  install mkcert if needed
 	brew install mkcert
 	echo "mkcert install complete"
 else
@@ -93,4 +93,3 @@ sudo a2ensite localhost.conf
 
 ## enable ssl module
 sudo a2enmod ssl
-

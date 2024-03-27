@@ -40,4 +40,3 @@ echo \
 
 ##  enable vhost
 sudo a2ensite $servername-ssl.conf
-

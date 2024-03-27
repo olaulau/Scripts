@@ -1,33 +1,17 @@
 #!/usr/bin/php
 <?php
-
 // constants
 $php_regex = 'php((\d)\.(\d))';
 
 
-// params handling
-unset($argv[0]); // script name, useless
-
-$update_mode = false;
-$update_arg_pos = array_search('--update', $argv);
-if ($update_arg_pos !== false) {
-	$update_mode = true;
-	unset($argv[$update_arg_pos]);
-}
-
-if(count($argv) > 1) {
-	var_dump($argv);
-	die("too many parameters" . PHP_EOL);
-	
-}
-elseif(count($argv) === 1) {
-	$argv = array_values($argv);
-	$user = $argv[0];
-}
+// param handling
+$update = getenv("update");
+$packages = getenv("packages");
+$user = getenv("user");
 
 
 // prepare apt
-if(!$update_mode) {
+if($update == 0) {
 	$os_release = parse_ini_file('/etc/os-release');
 	if ($os_release === false) {
 		die("unable to read os release" . PHP_EOL);
@@ -40,16 +24,23 @@ if(!$update_mode) {
 		passthru("wget -q https://packages.sury.org/php/apt.gpg -O sury.gpg");
 		rename("sury.gpg", "/etc/apt/trusted.gpg.d/sury.gpg");
 
-		unlink("/etc/apt/sources.list.d/sury.org.list");
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ bullseye main".PHP_EOL, FILE_APPEND);
-		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ bullseye main".PHP_EOL, FILE_APPEND);
+		if(file_exists("/etc/apt/sources.list.d/sury.org.list"))
+		{
+			unlink("/etc/apt/sources.list.d/sury.org.list");
+		}
+		$os_version_codename = $os_release['VERSION_CODENAME'];
+		if($os_version_codename === "trixie") { // testing
+			$os_version_codename = "bookworm"; // latest debian (12)
+		}
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ $os_version_codename main".PHP_EOL, FILE_APPEND);
+		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ $os_version_codename main".PHP_EOL, FILE_APPEND);
 	}
 	else if ($os_release['ID'] === 'ubuntu') {
 		passthru("add-apt-repository --yes ppa:ondrej/php");
 		passthru("add-apt-repository --yes ppa:ondrej/apache2");
 	}
 	else {
-		die("invalid os release" . PHP_EOL);
+		die("unsupported OS" . PHP_EOL);
 	}
 	passthru("apt -qq update");
 	passthru("apt -qq full-upgrade -y");
@@ -88,135 +79,73 @@ passthru($cmd, $res);
 // update-alternatives --set php /usr/bin/php7.4
 
 
-// php package excluion list
-$php_exclude = [
-	'list', 
-	'composer', 
-	'dev', 
-	'phpdocumentor', 
-	'psr', 
-	'zend', 
-	'symfony', 
-	'doctrine', 
-	'horde', 
-	'react', 
-	'illuminate', 
-	'zeta', 
-	'apcu', 
-	'gmagick', 
-	'letodms-lucene', 
-	'yac',
-	'libsodium',
-	'raphf', // segfault on PHP 5.6
-	'http', // depend on raphf
-	'mailparse', // error on CLI
-	'cassandra', // error on PHP 7.3 CLI
-	'lua', // error on PHP 7.3 CLI
-	'mysqlnd-ms', // error on PHP 5.6 CLI
-	'google-auth', // break php-google-api-php-client
-	'letodms', // too much dependencies
-	'mockery',
-	'sabre',
-	'sodium',
-	'tideways', // warning, and paid
-	'cboden-ratchet', // dependency fail on debian testing
-	'nesbot-carbon', // dependency fail on debian testing
-	'robmorgan-phinx', // dependency fail on debian testing
-	'twig-string-extra', // dependency fail on debian testing
-	'dbgsym', // debug symbols
-	"phpdbg",
-	'recode',
-	'phpunit',
-	'phalcon4', // conflict with phalcon3 (phalcon) config file
-	'mapscript', // warning already loaded
-	'memcached',
-	'redis',
-	'uopz', // make die and exit not working anymore
-	'gearman', // ubuntu 16.04
-	"enchant", // debian
-	"irods", // no candidates
-	"async-aws",
-	"phpseclib",
-	"ps",
-	"solr-all-dev",
-	"snmp",
-	"decimal",
-	"laravel",
-	"swoole",
-	"elisp", // elpa mode
-	"apigen",
-	"libvirt", // unable to load module
-	"solr", // throws deprecated with PHP 8.1 
-	"mapi", // overrides include_path with kopano
-	"guestfs", // warning on PHP 8.1
-	"adldap2", // dependency pb with lavavel & symfony
-	"protobuf", // deprecated php 8.1
-	"geos", // warning php 7.4
- 	"laravel", "illuminate", "symfony", "dragonmantank",
- 	"ratchet", "grpc", "stomp",
-];
-
-
-// get php package list
-$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
-$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-
-// filter only real php packages
-$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-		return true;
-	}
-	else {
-		return false;
-	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// get already installed php packages
-$cmd = "apt list --installed 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
-$installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
-// foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($installed_packages) . PHP_EOL; die;
-
-
-// filter out installed packages
-$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist" )) {
+	// get php package list
+	$cmd = "apt list 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+	$php_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+	
+	// filter only real php packages
+	require_once "config.inc.php";
+	$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+		if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	
+	// get already installed php packages
+	$cmd = "apt list --installed 'php*' 2> /dev/null | grep php | cut -d'/' -f1 | sort | uniq 2> /dev/null";
+	$installed_packages = explode(PHP_EOL, trim(shell_exec($cmd)));
+	// foreach($installed_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($installed_packages) . PHP_EOL; die;
+	
+	
+	// filter out installed packages
+	$php_packages = array_filter ($php_packages, function ($package) use ($installed_packages) {
 		foreach($installed_packages as $exclude) {
 			if ($package === $exclude) {
 				return false;
 			}
 		}
 		return true;
-	}
-	else {
-		return false;
-	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// filter out excluded packages
-$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
-	if (preg_match('/^php-/', $package) || preg_match('/^php\d\.\d-/', $package)) {
-		foreach($php_exclude as $exclude) {
-			if (strpos ($package, $exclude) !== false) {
-				return false;
+	});
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	if($packages === "blacklist") {
+		// filter out excluded packages from possible
+		$php_packages = array_filter ($php_packages, function ($package) use ($php_exclude) {
+			foreach($php_exclude as $exclude) {
+				if (strpos ($package, $exclude) !== false) {
+					return false;
+				}
 			}
-		}
-		return true;
+			return true;
+		});
 	}
-	else {
-		return false;
+	elseif($packages === "whitelist") {
+		// filter in include list from possible
+		$php_packages = array_filter ($php_packages, function ($package) use ($php_include) {
+			foreach($php_include as $include) {
+				if (
+					// preg_match('/^php-'.$include.'$/', $package) || 
+					preg_match('/^php\d\.\d-'.$include.'$/', $package)) {
+					return true;
+				}
+			}
+			return false;
+		});
 	}
-});
-// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
-
-
-// install packages
-$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
-// echo $cmd; die;
-passthru($cmd, $res);
+	// foreach($php_packages as $pack) {	echo $pack . PHP_EOL;	} ; echo count($php_packages) . PHP_EOL; die;
+	
+	
+	// install packages
+	$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
+	// echo $cmd; die;
+	passthru($cmd, $res);
+}
 
 
 // configure php (create common /etc/php/php.ini, backup each php.ini files)
@@ -276,4 +205,3 @@ foreach($phps as $php) {
 }
 passthru("a2enmod actions rewrite userdir alias proxy_fcgi");
 passthru("systemctl restart apache2");
-
