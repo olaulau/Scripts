@@ -1,6 +1,4 @@
 {
-    "name": "Example Application",
-    "description": "This is an example of OVH APIs wrapper usage",
     "require": {
         "ovh/ovh": "dev-master"
     }
