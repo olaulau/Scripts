@@ -15,6 +15,7 @@ if ( $return_var !== 0 ) {
 
 
 // params handling
+$script_name = $argv[0];
 unset($argv[0]); // remove useless script name
 $params = [];
 foreach($argv as $arg) {
@@ -42,7 +43,7 @@ foreach($params as $key => $value) {
 
 // to have same PHP executable & version for sub scripts
 $php_executable = "/usr/bin/php";
-if(!empty($_SERVER["_"])) {
+if(!empty($_SERVER["_"]) && $_SERVER["_"] != $script_name) {
 	$php_executable = $_SERVER["_"];
 }
 
