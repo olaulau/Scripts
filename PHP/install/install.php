@@ -40,8 +40,13 @@ foreach($params as $key => $value) {
 // var_dump($env); die;
 
 
+// to have same PHP executable & version for sub scripts
+$php_executable = "/usr/bin/php";
+if(!empty($_SERVER["_"])) {
+	$php_executable = $_SERVER["_"];
+}
+
 // launch sub-scripts
-$php_executable = $_SERVER["_"]; // to have same PHP executable & version for sub scripts
 passthru( "sudo $env $php_executable ./install_1.php " . implode(' ', $params) );
 if (!empty($params["user"])) {
 	passthru( "cd ../../HTTPD/mkcert/ && ./mkcert.sh " . $params["user"] );
