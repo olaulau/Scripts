@@ -1,0 +1,7 @@
+Options +Indexes
+
+<Files *.php>
+	SetHandler text/plain
+	ForceType text/plain
+</Files>
+
