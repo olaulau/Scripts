@@ -1,11 +1,13 @@
 #!/bin/bash
 ## https://cdimage.debian.org/mirror/cdimage/archive/
 
+ROOT_PATH=`realpath .`
+
 
 ## https://cdimage.debian.org/cdimage/
 
 SRC="rsync://cdimage.debian.org"
-DEST="./cdimage.debian.org"
+DEST="$ROOT_PATH/cdimage.debian.org"
 DIRECTORIES=( \
 	"cdimage/release/current/amd64" \
 	"cdimage/release/current-live/amd64" \
@@ -30,7 +32,7 @@ done
 ## https://d-i.debian.org/daily-images/amd64/daily/netboot/mini.iso
 
 SRC="https://d-i.debian.org"
-DEST="./d-i.debian.org"
+DEST="$ROOT_PATH/d-i.debian.org"
 DIRECTORY="daily-images/amd64/daily/netboot"
 FILE="mini.iso"
 
@@ -39,8 +41,9 @@ wget --content-disposition $SRC/$DIRECTORY/$FILE --output-document=$DEST/$DIRECT
 
 
 ## symlinks for stable
-SRC="./cdimage.debian.org"
-DEST="../downloads/OS/linux/debian"
+SRC="$ROOT_PATH/cdimage.debian.org"
+DEST="$ROOT_PATH/../downloads/OS/linux/debian"
+DEST=`realpath $DEST`
 
 rm -f "$DEST/stable"*/*
 ln -f -s -t "$DEST/stable"*/ "$SRC/cdimage/release/current-live/amd64/iso-hybrid/debian-live-"*-amd64-gnome.iso
