@@ -8,13 +8,13 @@ if [ -r "$HOME/.dbus/Xdbus" ]; then
   . "$HOME/.dbus/Xdbus"
 fi
 
-let FREE_RAM=`free -m | head -n3 | tail -n1 | tr -s ' ' | cut -f4 -d' '`
-###let USED_SWAP=`free -m | head -n4 | tail -n1 | tr -s ' ' | cut -f3 -d' '`
+let FREE_RAM=`free -m | head -n2 | tail -n1 | tr -s ' ' | cut -f4 -d' '`
+###let USED_SWAP=`free -m | head -n3 | tail -n1 | tr -s ' ' | cut -f3 -d' '`
 let DELTA=$FREE_RAM
 ###-$USED_SWAP
 #echo $DELTA
 
-let THRESHOLD=800
+let THRESHOLD=1000
 if [ "$DELTA" -lt "$THRESHOLD" ]
 then
 	/usr/bin/notify-send "RAM" "ATTENTION : il ne reste que $DELTA Mo de libre"

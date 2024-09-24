@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # has to be launched one per session
+# crontab -e
+# 	@reboot ./notify_prepare.sh
 # 
 # then call this code in your cron script
 #	if [ -r "$HOME/.dbus/Xdbus" ]; then
