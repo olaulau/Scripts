@@ -8,29 +8,29 @@
 - install all PHP versions  
     - with the most PHP modules it can, minus blacklist  
     or  
-    - with whitelisted PHP modules (WiP)
+    - with whitelisted PHP modules only
 - optionnally create apache-fpm virtualhost for each PHP version for the specified user, with HTTPS enabled  
   
   
 # requirements
 ```
-sudo apt install wget curl php git  
+sudo apt install wget curl php git
 ```
 
 
 # requirements for dev workstation
 user must have sudo rights, but do not use real root (whereas CA cert will not be isntalled into your browser)
 ```
-su - root  
-    <root password>  
-adduser <user> sudo  
-exit  
-su - <user>  
+su - root
+    <root password>
+adduser <user> sudo
+exit
+su - <user>
 ```
 
-for mkcert :
+for mkcert :  
 https://packages.debian.org/search?keywords=mkcert&searchon=names&suite=all&section=all  
-https://blog.gabrielsagnard.fr/brew-sur-linux-linuxbrew/ (auto installed)    
+https://blog.gabrielsagnard.fr/brew-sur-linux-linuxbrew/ (auto installed)
 
   
 # installation
@@ -42,21 +42,21 @@ cd Scripts/PHP/install
   
 # usage
 ```
-./install.php [--update] [--packages=<package_mode>] [--user=<USER>]  
---update : only install packages  
-<package_mode> = blacklist / whitelist. without this option, no additional package will be installed  
-<USER> = unix user to create fpm & vhost  
+./install.php [--update] [--packages=<package_mode>] [--user=<USER>]
+--update : only install packages
+<package_mode> = blacklist / whitelist. without this option, no additional package will be installed
+<USER> = unix user to create fpm & vhost
 ```
 
 
 # examples
 - php dev workstation
 ```
-./install.php [--update] --packages=whitelist --user=<user>  
+./install.php [--update] --packages=whitelist --user=<user>
 ```
 - php virtualhost server
 ```
-./install.php [--update] --packages=whitelist  
+./install.php [--update] --packages=whitelist
 ```
 
 # workaround

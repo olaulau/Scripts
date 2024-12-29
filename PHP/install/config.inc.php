@@ -45,7 +45,7 @@ $php_include = [
 	"sqlite3",
 	"ssh2",
 	"tcpdf",
-	"tidy",
+	//"tidy", // Dépend: libtidy5deb1 (>= 1:5.2.0) mais il n'est pas installable
 	"tokenizer",
 	"uuid",
 	"validate",
