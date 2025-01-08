@@ -68,8 +68,7 @@ else
 	mkcert localhost 127.0.0.1 ::1
 	echo "localhost key and cert generation complete"
 	sudo chown root:root localhost+2-key.pem localhost+2.pem
-	sudo mv localhost+2-key.pem /etc/ssl/mkcert/
-	sudo mv localhost+2.pem /etc/ssl/mkcert/
+	sudo mv localhost+2-key.pem localhost+2.pem /etc/ssl/mkcert/
 fi
 
 

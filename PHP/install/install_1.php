@@ -169,12 +169,6 @@ copy('php.service', '/etc/systemd/system/php.service');
 passthru("systemctl daemon-reload");
 
 
-// test if we have to create user conf (fpm & vhost)
-if(empty($user)) {
-	die("you didn't specify any user, so no fpm / vhost are created." . PHP_EOL);
-}
-
-
 // configure fpm (create user pool, disable and restart php)
 foreach($phps as $php) {
 	$content = file_get_contents("/etc/php/{$php[1]}/fpm/pool.d/www.conf");

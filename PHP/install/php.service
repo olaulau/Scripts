@@ -8,3 +8,5 @@ ExecStart=/root/bin/php.sh start
 ExecStop=/root/bin/php.sh stop
 ExecReload=/root/bin/php.sh reload
 
+[Install]
+WantedBy=multi-user.target
