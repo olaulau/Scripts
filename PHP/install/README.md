@@ -10,16 +10,11 @@
     or  
     - with whitelisted PHP modules only
 - optionnally create apache-fpm virtualhost for each PHP version for the specified user, with HTTPS enabled  
-  
-  
-# requirements
-```
-sudo apt install wget curl php git
-```
+
 
 
 # requirements for dev workstation
-user must have sudo rights, but do not use real root (whereas CA cert will not be isntalled into your browser)
+user must have sudo rights, but do not use real root (whereas CA cert will not be installed into your browser)
 ```
 su - root
     <root password>
@@ -33,6 +28,13 @@ https://packages.debian.org/search?keywords=mkcert&searchon=names&suite=all&sect
 https://blog.gabrielsagnard.fr/brew-sur-linux-linuxbrew/ (auto installed)
 
   
+  
+# requirements
+```
+sudo apt install wget curl php git
+```
+
+
 # installation
 ```
 git clone https://github.com/olaulau/Scripts/
@@ -52,7 +54,7 @@ cd Scripts/PHP/install
 # examples
 - php dev workstation
 ```
-./install.php [--update] --packages=whitelist --user=<user>
+./install.php [--update] --packages=whitelist --user=$USER
 ```
 - php virtualhost server
 ```
@@ -60,7 +62,7 @@ cd Scripts/PHP/install
 ```
 
 # workaround
-Sury PPA only support ubuntu LST releases, so you may see errors while running thee script (and not all expected packages will be installed).
+Sury PPA only support ubuntu LTS releases, so you may see errors while running thee script (and not all expected packages will be installed).
 ```
 sudo vim /etc/apt/sources.list.d/ondrej*.sources
 ```

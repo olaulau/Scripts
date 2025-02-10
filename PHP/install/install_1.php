@@ -42,7 +42,9 @@ if($update == 0) {
 	else {
 		die("unsupported OS" . PHP_EOL);
 	}
+	echo " => apt update" . PHP_EOL;
 	passthru("apt -qq update");
+	echo " => apt upgrade" . PHP_EOL;
 	passthru("apt -qq full-upgrade -y");
 }
 
@@ -72,6 +74,7 @@ foreach($phps as $php) {
 	$php_packages[] = "$php[0]" . "-fpm";
 }
 $cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
+echo " => $cmd" . PHP_EOL;
 passthru($cmd, $res);
 
 
@@ -143,7 +146,7 @@ if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist"
 	
 	// install packages
 	$cmd = "apt -y install " . implode(' ', $php_packages) . " 2> /dev/null";
-	// echo $cmd; die;
+	echo " => $cmd" . PHP_EOL;
 	passthru($cmd, $res);
 }
 
