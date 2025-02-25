@@ -14,7 +14,7 @@ let DELTA=$AVAILABLE_RAM
 ###-$USED_SWAP
 #echo $DELTA
 
-let THRESHOLD=2000
+let THRESHOLD=1500
 if [ "$DELTA" -lt "$THRESHOLD" ]
 then
 	id=`cat RAM.data`
