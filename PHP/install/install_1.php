@@ -152,7 +152,15 @@ if(!empty($packages) && ( $packages === "blacklist" || $packages === "whitelist"
 
 
 // configure php (create common /etc/php/php.ini, backup each php.ini files)
-copy ('/etc/php/'.end($phps)[1].'/fpm/php.ini', '/etc/php/php.ini');
+if(count($phps) > 1) {
+	// choose penultimate version, so we avoid copying a brand new stock php.ini that just have been installed
+	$phps_reversed = array_reverse($phps);
+	$php_choosen = $phps_reversed [1];
+}
+else {
+	$php_choosen = $phps [0];
+}
+copy ('/etc/php/'.$php_choosen[1].'/fpm/php.ini', '/etc/php/php.ini');
 passthru ('find /etc/php/*/ -name php.ini -exec cp {} {}.BAK \;');
 foreach ($phps as $php) {
 	passthru ("systemctl restart php{$php[1]}-fpm ");
