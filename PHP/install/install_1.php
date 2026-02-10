@@ -29,9 +29,10 @@ if($update == 0) {
 			unlink("/etc/apt/sources.list.d/sury.org.list");
 		}
 		$os_version_codename = $os_release['VERSION_CODENAME'];
-		if($os_version_codename === "trixie") { // testing
-			$os_version_codename = "bookworm"; // latest debian (12)
+		if($os_version_codename === "forky" || $os_version_codename === "testing") {
+			$os_version_codename = "trixie"; // latest debian (13)
 		}
+		//TODO new source file format
 		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/php/ $os_version_codename main".PHP_EOL, FILE_APPEND);
 		file_put_contents("/etc/apt/sources.list.d/sury.org.list", "deb https://packages.sury.org/apache2/ $os_version_codename main".PHP_EOL, FILE_APPEND);
 	}

@@ -61,8 +61,9 @@ cd Scripts/PHP/install
 ./install.php [--update] --packages=whitelist
 ```
 
+
 # workaround
-Sury PPA only support ubuntu LTS releases, so you may see errors while running thee script (and not all expected packages will be installed).
+Sury PPA only support ubuntu LTS releases, so you may see errors while running the script (and not all expected packages will be installed).
 ```
 sudo vim /etc/apt/sources.list.d/ondrej*.sources
 ```
@@ -70,4 +71,15 @@ and replace the "Suites: " property by the last TLS before your actual used rele
 ```
 sudo apt update
 ```
-and then rerun your latest script command with the "--update" option
+and then rerun your latest command with the "--update" option
+
+
+# renew certificate
+Once installed, the certificate won't be created anymore. It is valid for about 2 years.  
+After this, browsers will show a warning.  
+To force the renewal, type :  
+```
+rm "$HOME/.local/share/mkcert/rootCA*.pem"
+sudo rm "/etc/ssl/mkcert/*.pem"
+```
+
